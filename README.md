@@ -1,5 +1,4 @@
-# weibo-writer-agent
-智能微博写手
+# 智能微博写手
 
 ## 学习如何使用 Github 写作完成项目
 在开始与其他同学使用 Github 协同工作之前，请确保熟练使用 Github 的协同编程。如果不了解，请先学习[该笔记](./cowork-with-github.md)。
