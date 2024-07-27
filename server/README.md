@@ -14,6 +14,8 @@ conda activate WWA
 cd server && pip install -r requirements.txt
 ```
 
+注：conda 使用及相关环境问题，可以多问问GPT-4/Google等
+
 ## 启动服务
 
 ```bash
@@ -47,6 +49,8 @@ def create_app():
     app.register_blueprint(xxx_bp)
 ```
 
+注：关注自定义导包，建议都从 server 为根目录开始导包
+
 ###### 文件介绍
 
 1. `views.py`: 路由函数的定义在此处完成，并确保存在类似如下代码
@@ -73,10 +77,11 @@ from apps.my_bp_name.views import bp
 
 3. `models.py`: 表结构相关的放这里，实现请参考 server/apps/demo/models.py
 
-4. 类似`hook.py`,`decorators.py`,`decorators.py`等 Flask 常用文件，后续也可以统一格式
+4. 类似`hook.py`,`forms.py`,`decorators.py` 等 Flask/Python 常用文件，后续也可以统一格式
 
 ## 注意事项
 
 1. 在 PyCharm 等 IDE 里面，可以设置 server 目录为 "Sources Root"
 2. 日志在 `server/logs` 查看
 3. 注意 `.gitignore` 的更新和新增管理（已忽略了`logs`和`db.sqlite3`），超过 10M 的文件如非必要不建议上传
+
