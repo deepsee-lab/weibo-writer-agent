@@ -11,6 +11,6 @@ from loguru import logger
 bp = Blueprint("demo", __name__, url_prefix='/demo')
 
 
-@bp.route('/')
-def hello():
-    return 'hello demo'
+@bp.route('/heartbeat')
+def heartbeat():
+    return 'heartbeat'

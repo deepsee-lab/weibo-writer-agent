@@ -13,10 +13,14 @@ from apps.demo.models import DemoModel
 from apps.demo import bp as demo_bp
 
 
+# TODO: Import new blueprint here
+
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(config)
     app.register_blueprint(demo_bp)
+    # TODO: Register new blueprint here
 
     db.init_app(app)
 
@@ -27,6 +31,9 @@ app = create_app()
 
 with app.app_context():
     db.create_all()
+
+logger.info('Server is up and running.')
+logger.info('Please http://127.0.0.1:5000/demo/heartbeat to verify.')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000)

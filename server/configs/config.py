@@ -9,23 +9,22 @@ import sys
 import pytz
 from loguru import logger
 
-# ROOT_DIR
+# Get ROOT_DIR
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# logger
-log_level = 'INFO'
+# Set logger
 logger.remove()
 log_dir = os.path.join(ROOT_DIR, 'logs')
 log_file = os.path.join(log_dir, '{time:YYYY-MM-DD}.log')
+log_level = 'INFO'
 logger.add(sys.stderr, level=log_level)
 logger.add(log_file, level=log_level, rotation="00:00", enqueue=True, serialize=False, encoding="utf-8")
 
-# print
+# Print ROOT_DIR
 logger.info('ROOT_DIR: {}'.format(ROOT_DIR))
 
-# cst timezone
+# Set timezone
 cst_tz = pytz.timezone('Asia/Shanghai')
-Docker_Version = '0.0.1'
 
 # DB
 # sqlite
