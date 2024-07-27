@@ -73,7 +73,7 @@ from apps.my_bp_name.views import bp
 
 3. `models.py`: 表结构相关的放这里，实现请参考 server/apps/demo/models.py
 
-4. 类似`hook.py`,`decorators.py`,`decorators.py`等 Flask 常用文件，后续也可以统一格式
+4. 类似`hook.py`,`forms.py`,`decorators.py` 等 Flask/Python 常用文件，后续也可以统一格式
 
 ## 注意事项
 
