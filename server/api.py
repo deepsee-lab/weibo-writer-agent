@@ -32,8 +32,11 @@ app = create_app()
 with app.app_context():
     db.create_all()
 
+host = '127.0.0.1'
+port = 5000
+
 logger.info('Server is up and running.')
-logger.info('Please http://127.0.0.1:5000/demo/heartbeat to verify.')
+logger.info('Please visit http://{}:{}/demo/heartbeat to verify.'.format(host, port))
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host=host, port=port)

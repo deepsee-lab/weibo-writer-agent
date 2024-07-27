@@ -13,4 +13,5 @@ bp = Blueprint("demo", __name__, url_prefix='/demo')
 
 @bp.route('/heartbeat')
 def heartbeat():
+    logger.info('run heartbeat')
     return 'heartbeat'

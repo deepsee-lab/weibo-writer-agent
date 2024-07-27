@@ -1,11 +1,25 @@
-# server
+# Server
+
+## 环境配置
+
+###### Anaconda
+
+官方下载: https://www.anaconda.com/download
+官方文档：https://docs.anaconda.com/
+
+```bash
+# open terminal
+conda create -n WWA python=3.10.14
+conda activate WWA
+cd server && pip install -r requirements.txt
+```
 
 ## 启动服务
 
 ```bash
-conda create -n WWA python=3.10.14
-conda activate WWA
-cd server && python api.py
+# open terminal
+# cd server
+python api.py
 ```
 
 ## 测试服务
@@ -14,9 +28,11 @@ cd server && python api.py
 
 看到页面显示 heartbeat 则调用成功
 
+注：此处 IP 和 Port 以实际配置的为准，注意类似 `Please visit http://IP:Port/demo/heartbeat to verify.` 的日志输出
+
 ## 新增Flask蓝图说明（代码合并说明）
 
-请大家在 `server/apps` 目录下，新建和 `demo` 同级的蓝图文件夹，完整路径为`server/apps/my_bp_name`
+请大家在 `server/apps` 目录下，新建和 `demo` 同级的蓝图文件夹，完整路径为 `server/apps/my_bp_name`，`my_bp_name` 替换为具体的英文名称
 
 其中`server/apps/my_bp_name/views.py`和`server/apps/my_bp_name/__init__.py`必须有（参考 `server/apps/demo`），其他文件可以灵活
 
@@ -63,4 +79,4 @@ from apps.my_bp_name.views import bp
 
 1. 在 PyCharm 等 IDE 里面，可以设置 server 目录为 "Sources Root"
 2. 日志在 `server/logs` 查看
-3. 注意 `.gitignore` 的更新和新增管理
+3. 注意 `.gitignore` 的更新和新增管理（已忽略了`logs`和`db.sqlite3`），超过 10M 的文件如非必要不建议上传
