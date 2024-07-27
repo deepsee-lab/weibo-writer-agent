@@ -14,6 +14,8 @@ conda activate WWA
 cd server && pip install -r requirements.txt
 ```
 
+注：conda 使用及相关环境问题，可以多问问GPT-4/Google等
+
 ## 启动服务
 
 ```bash
@@ -46,6 +48,8 @@ def create_app():
     # add
     app.register_blueprint(xxx_bp)
 ```
+
+注：关注自定义导包，建议都从 server 为根目录开始导包
 
 ###### 文件介绍
 
