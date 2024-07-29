@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Standard library imports.
+import os
 import sqlite3
 # Related third party imports.
 from flask import Flask
@@ -41,9 +42,10 @@ with app.app_context():
 
 host = '127.0.0.1'
 port = 5000
+debug = True
 
 logger.info('Server is up and running.')
 logger.info('Please visit http://{}:{}/demo/heartbeat to verify.'.format(host, port))
 
 if __name__ == '__main__':
-    app.run(host=host, port=port)
+    app.run(debug=debug, host=host, port=port)
