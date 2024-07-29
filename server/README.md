@@ -20,7 +20,6 @@ cd server && pip install -r requirements.txt
 
 ```bash
 # open terminal
-# conda activate WWA
 # cd server
 python api.py
 ```
@@ -85,3 +84,4 @@ from apps.my_bp_name.views import bp
 1. 在 PyCharm 等 IDE 里面，可以设置 server 目录为 "Sources Root"
 2. 日志在 `server/logs` 查看
 3. 注意 `.gitignore` 的更新和新增管理（已忽略了`logs`和`db.sqlite3`），超过 10M 的文件如非必要不建议上传
+
