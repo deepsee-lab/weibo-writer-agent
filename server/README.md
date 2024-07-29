@@ -24,7 +24,7 @@ cd server && pip install -r requirements.txt
 # cd server
 python api.py
 ```
-注：建议在 Linux/MacOS 下运行，Windows 可以使用 WSL2
+注：建议在 Linux/MacOS 下运行，Windows 可以使用 WSL2 (微软官方文档：https://learn.microsoft.com/zh-cn/windows/wsl/basic-commands)
 
 ## 测试服务
 
