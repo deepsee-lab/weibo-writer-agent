@@ -19,6 +19,6 @@ def heartbeat1():
 @bp.route('/vector')
 def vector(documents,vector_type):
     if 'chroma' in vector_type:
-        db = Chroma.from_documents(documents, embeddings.OllamaEmbeddings(model='nomic-embed-text'),persist_directory='data')
+        db = Chroma.from_documents(documents, embeddings.OllamaEmbeddings(model='nomic-embed-text'),persist_directory='/RAG_Vector/data')
         db.persist()
         return db
