@@ -4,9 +4,9 @@
 
 ###### Anaconda
 
-官方下载: https://www.anaconda.com/download
+官方下载：https://www.anaconda.com/download
 
-官方文档: https://docs.anaconda.com/
+官方文档：https://docs.anaconda.com/
 
 ```bash
 # open terminal
@@ -25,7 +25,7 @@ cd server && pip install -r requirements.txt
 # cd server
 python api.py
 ```
-注：建议在 Linux / MacOS 上运行，Windows 上可以使用 WSL2，官方文档：https://learn.microsoft.com/zh-cn/windows/wsl/basic-commands
+注：建议在 Linux / MacOS 上运行，Windows 上可以使用 WSL2，官方教程：https://learn.microsoft.com/zh-cn/windows/wsl/basic-commands
 
 ## 测试服务
 
