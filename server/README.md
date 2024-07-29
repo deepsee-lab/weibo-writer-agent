@@ -20,9 +20,11 @@ cd server && pip install -r requirements.txt
 
 ```bash
 # open terminal
+# conda activate WWA
 # cd server
 python api.py
 ```
+注：建议在 Linux/MacOS 下运行，Windows 可以使用 WSL2
 
 ## 测试服务
 
