@@ -31,3 +31,5 @@ cst_tz = pytz.timezone('Asia/Shanghai')
 CUS_DB_PATH = os.path.join(ROOT_DIR, 'db.sqlite3')
 SQLALCHEMY_DATABASE_URI = 'sqlite:////{}'.format(CUS_DB_PATH)
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+#
