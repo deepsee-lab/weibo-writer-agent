@@ -89,3 +89,5 @@ from apps.my_bp_name.views import bp
 2. 日志在 `server/logs` 查看
 3. 注意 `.gitignore` 的更新和新增管理（已忽略了启动会自动创建/更新的`logs`目录和`db.sqlite3`文件），超过 10M 的文件如非必要不建议上传
 
+
+
