@@ -34,11 +34,11 @@ python api.py
 
 ## 新增Flask蓝图说明（代码合并说明）
 
-请大家在 `server/apps` 目录下，新建和 `demo` 同级的蓝图文件夹，完整路径为 `server/apps/my_bp_name`，`my_bp_name` 替换为具体的英文名称
+请大家在 `apps` 目录下，新建和 `demo` 同级的蓝图文件夹，完整路径为 `apps/my_bp_name`，`my_bp_name` 替换为具体的英文名称
 
-其中`server/apps/my_bp_name/views.py`和`server/apps/my_bp_name/__init__.py`必须有（参考 `server/apps/demo`），其他文件可以灵活
+其中`apps/my_bp_name/views.py`和`apps/my_bp_name/__init__.py`必须有（参考 `apps/demo`），其他文件可以灵活
 
-并在 `server/api.py` 中增加类似如下代码
+并在 `api.py` 中增加类似如下代码
 
 ```text
 # add
@@ -75,13 +75,13 @@ def heartbeat():
 from apps.my_bp_name.views import bp
 ```
 
-3. `models.py`: 表结构相关的放这里，实现请参考 server/apps/demo/models.py
+3. `models.py`: 表结构相关的放这里，实现请参考 apps/demo/models.py
 
 4. 类似`hook.py`,`forms.py`,`decorators.py` 等 Flask/Python 常用文件，后续也可以统一格式
 
 ## 注意事项
 
 1. 在 PyCharm 等 IDE 里面，可以设置 server 目录为 "Sources Root"
-2. 日志在 `server/logs` 查看
+2. 日志在 `logs` 查看
 3. 注意 `.gitignore` 的更新和新增管理（已忽略了`logs`和`db.sqlite3`），超过 10M 的文件如非必要不建议上传
 
