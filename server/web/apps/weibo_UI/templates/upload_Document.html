@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+{% endblock %}
+{% block content %}
+
+    <div class="pagetitle">
+      <h1>upload_data</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/home/">Home</a></li>
+          <li class="breadcrumb-item">Charts</li>
+          <li class="breadcrumb-item active">upload_data</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <p>pls choose WAT data file path</p>
+
+    <section class="section">
+      <div class="row">
+
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Upload datas</h5>
+              <form method="post" enctype="multipart/form-data" action="/upload/">
+                <select name="type_name_select" class="form-select" aria-label="Default select example">
+                  <option value="-1">--请选择--</option>
+                </select>
+                <div class="row mb-3">
+                    <label for="inputNumber" class="col-sm-8 col-form-label">File Upload</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" type="file" id="formFile" name="file" multiple="">
+                    </div>
+                </div>
+                <input type="submit" value="上传" class="btn btn-primary">
+              </form>
+            </div>
+          </div>
+        </div>
+
+        
+
+      </div>
+    </section>
+
+{% endblock %}
+
+{% block js %}
+  <script src="/static/js/jquery-3.6.0.min.js"></script>
+
+  {% endblock %}
