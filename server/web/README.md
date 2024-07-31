@@ -1,4 +1,4 @@
-# Server
+# server/web
 
 ## 环境配置
 
