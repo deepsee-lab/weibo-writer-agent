@@ -139,3 +139,4 @@ cython_debug/
 
 # cus add
 .idea/
+.DS_Store
