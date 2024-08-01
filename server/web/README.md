@@ -1,4 +1,4 @@
-# server/web
+# web
 
 ## 新增蓝图
 

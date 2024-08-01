@@ -1,4 +1,4 @@
-# server/flask_demo
+# flask_demo
 
 ## 环境配置
 

@@ -1,4 +1,4 @@
-# server/self_media_flask
+# self_media_flask
 
 ## 新增蓝图
 
