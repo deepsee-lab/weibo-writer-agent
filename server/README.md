@@ -30,15 +30,11 @@ embedding(原子服务. 单蓝图: private，saas): 4002
 
 reranker(原子服务. 单蓝图): 待定
 
-<br>
-
 ###### framework
 
 flask_sample: 5001
 
 fastapi_sample: 5002
-
-<br>
 
 ###### toolkit
 
@@ -54,8 +50,6 @@ self_media(原子服务. 多蓝图: wb, wpp...): 6005
 
 creation(原子服务. 多蓝图: image, audio, video): 待定
 
-<br>
-
 ###### algorithm
 
 agent(复合服务. 单蓝图): 7001
@@ -66,20 +60,10 @@ document_parser(原子服务. 多蓝图: Word, PDF, Table, Image...): 7003
 
 retrieve(复合服务. 多蓝图: vector search, keywords search, web browser...): 7004
 
-<br>
-
 ###### workflow
 
 workflow: 待定
 
-<br>
-
 ###### web
 
 web(复合服务. 多蓝图): 9000起
-
-<br>
-<br>
-<br>
-<br>
-<br>
