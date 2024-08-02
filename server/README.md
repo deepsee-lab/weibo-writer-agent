@@ -6,7 +6,15 @@ Flask: flask_sample, web, self_media
 
 FastAPI: fastapi_sample, agent, embedding, extraction, memory, retrieve
 
+## 服务调度说明
+
+web: agent(llm、rag等问答模式切换), memory(知识库管理), self_media(创作平台使用)
+agent: retrieve(知识检索)
+memory: extraction(文档解析、切片), embedding(文本向量化)
+retrieve: embedding
+
 ## 各服务端口
+
 flask_sample: 2000
 
 fastapi_sample: 2001
