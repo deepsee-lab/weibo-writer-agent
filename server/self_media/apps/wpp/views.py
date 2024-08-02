@@ -1,6 +1,7 @@
 from loguru import logger
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
+from apps.wpp.scripts.add_draft import add_draft
 
 router = APIRouter(
     prefix="/wpp"
@@ -8,16 +9,16 @@ router = APIRouter(
 
 
 class DraftAddItem(BaseModel):
-    title: str
-    content: str
-    thumb_media_id: str
+    title: str = Field(default="title")
+    content: str = Field(default="content")
+    thumb_media_id: str = Field(default="xxxxxx_xxx-xxxx")
 
 
 class Response(BaseModel):
     success: bool
     code: str
     message: str
-    data: dict = None
+    data: dict
 
 
 @router.get("/heartbeat")
@@ -30,5 +31,10 @@ def heartbeat():
 def draft_add(item: DraftAddItem):
     logger.info('run draft_add')
     logger.info(item)
-    data = {}
-    return Response(success=True, code='000000', message='success', data=data)
+    title, content, thumb_media_id = item.title, item.content, item.thumb_media_id
+    res = add_draft(title, content, thumb_media_id)
+    logger.info(res)
+    if 'errcode' in res:
+        return Response(success=False, code=str(res['errcode']), message=res['errmsg'], data={})
+    else:
+        return Response(success=True, code='000000', message='success', data={})

@@ -28,7 +28,7 @@ class Response(BaseModel):
     success: bool
     code: str
     message: str
-    data: dict = None
+    data: dict
 
 
 @router.post('/inference_one')
