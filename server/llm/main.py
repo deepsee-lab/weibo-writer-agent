@@ -6,8 +6,8 @@ from apps.private.views import router as private_router
 from configs import config
 
 app = FastAPI(
-    title="agent",
-    description="agent",
+    title="LLM",
+    description="LLM",
     version="0.0.1",
     docs_url="/docs",
     redoc_url="/redoc",

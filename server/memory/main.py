@@ -6,8 +6,8 @@ from apps.vector.views import router as milvus_router
 from configs import config
 
 app = FastAPI(
-    title="FastAPI",
-    description="FastAPI",
+    title="Memory",
+    description="Memory",
     version="0.0.1",
     docs_url="/docs",
     redoc_url="/redoc",
