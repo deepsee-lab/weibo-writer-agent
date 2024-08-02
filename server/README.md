@@ -13,8 +13,6 @@ fastapi_sample: 2001
 
 self_media: 4000
 
-agent: 5000
-
 embedding: 5001
 
 extraction: 5002
@@ -23,5 +21,6 @@ memory: 5003
 
 retrieve: 5004
 
-web: 6000起
+agent: 5005
 
+web: 6000起

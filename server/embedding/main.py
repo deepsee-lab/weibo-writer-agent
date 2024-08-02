@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Standard library imports.
-# Related third party imports.
 import json
 from typing import List
+# Related third party imports.
 import uvicorn
 from loguru import logger
+from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 # Local application/library specific imports.
 from configs import config
 from algorithm import inference
@@ -54,9 +54,9 @@ def heartbeat():
     return 'heartbeat'
 
 
-@app.post('/get_embeddings')
-def get_embeddings(item: Item):
-    logger.info('run get_embeddings')
+@app.post('/inference_mul')
+def inference_mul(item: Item):
+    logger.info('run inference_mul')
 
     sentences = item.sentences
 
