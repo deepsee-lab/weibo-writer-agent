@@ -3,6 +3,7 @@ from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from apps.llm.views import router as llm_router
+from configs import config
 
 app = FastAPI(
     title="agent",

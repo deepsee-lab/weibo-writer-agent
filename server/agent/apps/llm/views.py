@@ -15,7 +15,7 @@ router = APIRouter(
 
 class InfOneItem(BaseModel):
     messages: List[str] = Field(description="Please refer to openai to write")
-    model_type: str = Field(description="Choose from ollama, xinference, api...", default="ollama")
+    inference_service: str = Field(description="Choose from ollama, xinference, api...", default="ollama")
     model: str = Field(default="qwen2:1.5b-instruct-fp16")
     max_tokens: int = Field(default=4096)
     stream: bool = Field(default=False)

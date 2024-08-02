@@ -3,6 +3,7 @@ from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from apps.vector.views import router as milvus_router
+from configs import config
 
 app = FastAPI(
     title="FastAPI",

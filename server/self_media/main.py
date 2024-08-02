@@ -3,6 +3,7 @@ from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from apps.wpp.views import router as wpp_router
+from configs import config
 
 app = FastAPI(
     title="self_media",
