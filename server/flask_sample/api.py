@@ -31,7 +31,7 @@ with app.app_context():
     db.create_all()
 
 host = '0.0.0.0'
-port = 5001
+port = 5010
 debug = True
 
 logger.info('Server is up and running.')
