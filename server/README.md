@@ -2,9 +2,9 @@
 
 ## 服务框架说明
 
-Flask: flask_sample, web, self_media
+Flask: flask_sample, web
 
-FastAPI: fastapi_sample, agent, embedding, extraction, memory, retrieve
+FastAPI: fastapi_sample, agent, embedding, extraction, memory, retrieve, self_media
 
 ## 服务调度说明
 
