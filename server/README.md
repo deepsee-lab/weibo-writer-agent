@@ -1,37 +1,85 @@
 # server
 
-## 服务框架说明
+## 服务框架
 
 Flask: flask_sample, web
 
-FastAPI: fastapi_sample, agent, embedding, extraction, memory, retrieve, self_media
+FastAPI: fastapi_sample, others
 
-## 服务调度说明
+## 服务调度
 
-web: agent(llm、rag等问答模式切换), memory(知识库管理), self_media(创作平台使用)
+web(实时): agent(智能体使用), rag(知识库对话), memory(知识库管理), self_media(创作平台使用)...
 
-agent: retrieve(知识检索)
+agent(实时): llm(大模型推理生成) + toolkit(工具调用)
 
-memory: extraction(文档解析、切片), embedding(文本向量化)
+rag(实时): retrieve(知识检索) + llm(大模型推理生成)
 
-retrieve: embedding
+memory(非实时): document_parser(文档解析) + text_chunking(文本分块) + embedding(文本向量化)...
 
-## 各服务端口
+retrieve(实时): embedding(文本向量化), web_parser(网页解析) + text_chunking(文本分块), memory(知识库管理)...
 
-flask_sample: 2000
+toolkit(实时/非实时): all
 
-fastapi_sample: 2001
+## 服务端口
 
-self_media: 4000
+###### model
 
-embedding: 5001
+llm(原子服务. 多蓝图: private，saas): 4001
 
-extraction: 5002
+embedding(原子服务. 单蓝图: private，saas): 4002
 
-memory: 5003
+reranker(原子服务. 单蓝图): 待定
 
-retrieve: 5004
+<br>
 
-agent: 5005
+###### framework
 
-web: 6000起
+flask_sample: 5001
+
+fastapi_sample: 5002
+
+<br>
+
+###### toolkit
+
+toolkit(原子服务. 多蓝图: 各个toolkit): 6001
+
+memory(复合服务. 多蓝图: db, vector...): 6002
+
+web_parser(原子服务. 多蓝图: search_engine_api, page_parser...): 6003
+
+text_chunking(原子服务. 单蓝图): 6004
+
+self_media(原子服务. 多蓝图: wb, wpp...): 6005
+
+creation(原子服务. 多蓝图: image, audio, video): 待定
+
+<br>
+
+###### algorithm
+
+agent(复合服务. 单蓝图): 7001
+
+rag(复合服务. 单蓝图): 7002
+
+document_parser(原子服务. 多蓝图: Word, PDF, Table, Image...): 7003
+
+retrieve(复合服务. 多蓝图: vector search, keywords search, web browser...): 7004
+
+<br>
+
+###### workflow
+
+workflow: 待定
+
+<br>
+
+###### web
+
+web(复合服务. 多蓝图): 9000起
+
+<br>
+<br>
+<br>
+<br>
+<br>
