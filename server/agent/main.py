@@ -2,11 +2,11 @@ import uvicorn
 from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from apps.vector.views import router as milvus_router
+from apps.llm.views import router as llm_router
 
 app = FastAPI(
-    title="FastAPI",
-    description="FastAPI",
+    title="agent",
+    description="agent",
     version="0.0.1",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -22,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],  # 允许的请求头
 )
 
-app.include_router(milvus_router)
+app.include_router(llm_router)
 
 
 @app.get("/")
@@ -32,7 +32,7 @@ def index():
 
 
 host = '0.0.0.0'
-port = 5003
+port = 5005
 reload = True
 
 logger.info('Server is up and running.')
