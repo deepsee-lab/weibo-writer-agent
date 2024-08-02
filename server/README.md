@@ -24,41 +24,41 @@ toolkit(实时/非实时): all
 
 ###### model
 
-llm(原子服务. 多蓝图: private，saas): 4001
+llm(原子服务. 多蓝图: private，saas): 4010
 
-embedding(原子服务. 单蓝图: private，saas): 4002
+embedding(原子服务. 单蓝图: private，saas): 4020
 
 reranker(原子服务. 单蓝图): 待定
 
 ###### framework
 
-flask_sample: 5001
+flask_sample: 5010
 
-fastapi_sample: 5002
+fastapi_sample: 5020
 
 ###### toolkit
 
-toolkit(原子服务. 多蓝图: 各个toolkit): 6001
+toolkit(原子服务. 多蓝图: 各个toolkit): 6010
 
-memory(复合服务. 多蓝图: db, vector...): 6002
+memory(复合服务. 多蓝图: db, vector...): 6020
 
-web_parser(原子服务. 多蓝图: search_engine_api, page_parser...): 6003
+web_parser(原子服务. 多蓝图: search_engine_api, page_parser...): 6030
 
-text_chunking(原子服务. 单蓝图): 6004
+text_chunking(原子服务. 单蓝图): 6040
 
-self_media(原子服务. 多蓝图: wb, wpp...): 6005
+self_media(原子服务. 多蓝图: wb, wpp...): 6050
 
 creation(原子服务. 多蓝图: image, audio, video): 待定
 
 ###### algorithm
 
-agent(复合服务. 单蓝图): 7001
+agent(复合服务. 单蓝图): 7010
 
-rag(复合服务. 单蓝图): 7002
+rag(复合服务. 单蓝图): 7020
 
-document_parser(原子服务. 多蓝图: Word, PDF, Table, Image...): 7003
+document_parser(原子服务. 多蓝图: Word, PDF, Table, Image...): 7030
 
-retrieve(复合服务. 多蓝图: vector search, keywords search, web browser...): 7004
+retrieve(复合服务. 多蓝图: vector search, keywords search, web browser...): 7040
 
 ###### workflow
 

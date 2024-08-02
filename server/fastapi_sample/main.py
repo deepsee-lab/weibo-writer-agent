@@ -33,7 +33,7 @@ def index():
 
 
 host = '0.0.0.0'
-port = 5002
+port = 5020
 reload = True
 
 logger.info('Server is up and running.')
