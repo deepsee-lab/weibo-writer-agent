@@ -8,7 +8,7 @@ from loguru import logger
 # Local application/library specific imports.
 
 
-bp = Blueprint("Content_Creator", __name__, url_prefix='/Content_Creator')
+bp = Blueprint("wpp", __name__, url_prefix='/wpp')
 
 
 @bp.route('/heartbeat')
