@@ -31,5 +31,13 @@ def index():
     return "index"
 
 
+host = '0.0.0.0'
+port = 5003
+reload = True
+
+logger.info('Server is up and running.')
+logger.info('Browse http://127.0.0.1:{} to verify.'.format(port))
+logger.info('Browse http://127.0.0.1:{}/docs to test.'.format(port))
+
 if __name__ == '__main__':
-    uvicorn.run(app="main:app", reload=True, host="0.0.0.0", port=5003)
+    uvicorn.run(app="main:app", reload=reload, host=host, port=port)
