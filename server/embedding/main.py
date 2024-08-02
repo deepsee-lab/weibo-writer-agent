@@ -5,7 +5,7 @@ from typing import List
 # Related third party imports.
 import uvicorn
 from loguru import logger
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 # Local application/library specific imports.
@@ -32,7 +32,7 @@ app.add_middleware(
 
 
 class Item(BaseModel):
-    sentences: List[str]
+    sentences: List[str] = Field(default=['文本1', '文本2'])
 
 
 class Response(BaseModel):
