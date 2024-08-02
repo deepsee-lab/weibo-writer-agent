@@ -74,7 +74,7 @@ def inference_mul(item: Item):
 
 
 host = '0.0.0.0'
-port = 5001
+port = 4002
 reload = True
 
 logger.info('Server is up and running.')
