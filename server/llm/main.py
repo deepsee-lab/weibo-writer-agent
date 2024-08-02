@@ -2,7 +2,7 @@ import uvicorn
 from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from apps.llm.views import router as llm_router
+from apps.private.views import router as private_router
 from configs import config
 
 app = FastAPI(
@@ -23,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],  # 允许的请求头
 )
 
-app.include_router(llm_router)
+app.include_router(private_router)
 
 
 @app.get("/")
@@ -33,7 +33,7 @@ def index():
 
 
 host = '0.0.0.0'
-port = 5005
+port = 4001
 reload = True
 
 logger.info('Server is up and running.')
