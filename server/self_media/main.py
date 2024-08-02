@@ -2,11 +2,12 @@ import uvicorn
 from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from apps.llm.views import router as llm_router
+from apps.wpp.views import router as wpp_router
+from configs import config
 
 app = FastAPI(
-    title="agent",
-    description="agent",
+    title="self_media",
+    description="self_media",
     version="0.0.1",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -22,7 +23,7 @@ app.add_middleware(
     allow_headers=["*"],  # 允许的请求头
 )
 
-app.include_router(llm_router)
+app.include_router(wpp_router)
 
 
 @app.get("/")
@@ -32,7 +33,7 @@ def index():
 
 
 host = '0.0.0.0'
-port = 5005
+port = 6005
 reload = True
 
 logger.info('Server is up and running.')

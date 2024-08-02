@@ -3,10 +3,11 @@ from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from apps.vector.views import router as milvus_router
+from configs import config
 
 app = FastAPI(
-    title="FastAPI",
-    description="FastAPI",
+    title="Memory",
+    description="Memory",
     version="0.0.1",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -32,7 +33,7 @@ def index():
 
 
 host = '0.0.0.0'
-port = 5003
+port = 6002
 reload = True
 
 logger.info('Server is up and running.')

@@ -10,11 +10,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 # Local application/library specific imports.
 from configs import config
-from algorithm import inference
 
 app = FastAPI(
-    title="Embedding",
-    description="Embedding",
+    title="RAG",
+    description="RAG",
     version="0.0.1",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -31,8 +30,22 @@ app.add_middleware(
 )
 
 
-class Item(BaseModel):
-    sentences: List[str] = Field(default=['文本1', '文本2'])
+class InfItem(BaseModel):
+    # llm
+    messages: List[str] = Field(description="Please refer to openai to write")
+    inference_service: str = Field(description="Choose from ollama, xinference, api...", default="ollama")
+    model: str = Field(default="qwen2:1.5b-instruct-fp16")
+    max_tokens: int = Field(default=4096)
+    stream: bool = Field(default=False)
+    temperature: float = Field(default=0.8)
+    timeout: int = Field(default=60)
+    # rag
+    rag: bool = Field(default=False)
+    kb_id: str = Field(default="0" * 32)
+    history_count: int = Field(default=10)
+    top_k: int = Field(default=10)
+    threshold_value: float = Field(default=0.0)
+    retrieve_only: bool = Field(default=False)
 
 
 class Response(BaseModel):
@@ -54,27 +67,21 @@ def heartbeat():
     return 'heartbeat'
 
 
-@app.post('/inference_mul')
-def inference_mul(item: Item):
-    logger.info('run inference_mul')
+@app.post('/inference')
+def inference(item: InfItem):
+    logger.info('run inference')
+    logger.info('item: {}'.format(item))
 
-    sentences = item.sentences
-
-    logger.info('sentences:{}'.format(sentences))
-
-    embeddings = inference(sentences)
-
-    # logger.info('embeddings:{}'.format(embeddings))
-
+    result = 'llm result'
     data = {
-        'embeddings': embeddings.tolist()
+        'result': result,
     }
 
     return Response(success=True, code='000000', message='success', data=data)
 
 
 host = '0.0.0.0'
-port = 4002
+port = 7002
 reload = True
 
 logger.info('Server is up and running.')

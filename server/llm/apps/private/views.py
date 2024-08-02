@@ -5,22 +5,20 @@ from typing import List
 from loguru import logger
 from pydantic import BaseModel, Field
 from fastapi import APIRouter
-
 # Local application/library specific imports.
 
 router = APIRouter(
-    prefix="/llm"
+    prefix="/private"
 )
 
 
-class InfOneItem(BaseModel):
+class InfItem(BaseModel):
     messages: List[str] = Field(description="Please refer to openai to write")
-    model_type: str = Field(description="Choose from ollama, xinference, api...", default="ollama")
+    inference_service: str = Field(description="Choose from ollama, xinference, api...", default="ollama")
     model: str = Field(default="qwen2:1.5b-instruct-fp16")
     max_tokens: int = Field(default=4096)
     stream: bool = Field(default=False)
     temperature: float = Field(default=0.8)
-    # top_p: float
     timeout: int = Field(default=60)
 
 
@@ -28,12 +26,12 @@ class Response(BaseModel):
     success: bool
     code: str
     message: str
-    data: dict = None
+    data: dict
 
 
-@router.post('/inference_one')
-def inference_one(item: InfOneItem):
-    logger.info('run inference_mul')
+@router.post('/inference')
+def inference(item: InfItem):
+    logger.info('run inference')
     logger.info('item: {}'.format(item))
 
     result = 'llm result'
