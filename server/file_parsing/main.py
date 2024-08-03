@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
+# Standard library imports.
+# Related third party imports.
 import uvicorn
 from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+# Local application/library specific imports.
 from apps.document.views import router as private_router
 from configs import config
 
