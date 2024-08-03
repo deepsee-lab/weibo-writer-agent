@@ -3,6 +3,7 @@ fastapi==0.112.0
 flask==3.0.3
 flask_sqlalchemy==3.1.1
 loguru==0.7.2
+python-docx==1.1.2
 python-dotenv==1.0.1
 pytz==2024.1
 requests==2.32.3

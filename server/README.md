@@ -14,9 +14,9 @@ agent(实时): llm(大模型推理生成) + toolkit(工具调用)
 
 rag(实时): retrieve(知识检索) + llm(大模型推理生成)
 
-memory(非实时): document_parser(文档解析) + text_chunking(文本分块) + embedding(文本向量化)...
+memory(非实时): file_parsing(文件解析) + text_chunking(文本分块) + embedding(文本向量化)...
 
-retrieve(实时): embedding(文本向量化), web_parser(网页解析) + text_chunking(文本分块), memory(知识库管理)...
+retrieve(实时): embedding(文本向量化), web_parsing(网页解析) + text_chunking(文本分块), memory(知识库管理)...
 
 toolkit(实时/非实时): all
 
@@ -42,7 +42,7 @@ toolkit(原子服务. 多蓝图: 各个toolkit): 6010
 
 memory(复合服务. 多蓝图: db, vector...): 6020
 
-web_parser(原子服务. 多蓝图: search_engine_api, page_parser...): 待定
+web_parsing(原子服务. 多蓝图: search_engine_api, page_parsing...): 待定
 
 text_chunking(原子服务. 单蓝图): 6040
 
@@ -56,7 +56,7 @@ agent(复合服务. 单蓝图): 7010
 
 rag(复合服务. 单蓝图): 7020
 
-document_parser(原子服务. 多蓝图: Word, PDF, Table, Image...): 7030
+file_parsing(原子服务. 多蓝图: Word, PDF, Table, Image...): 7030
 
 retrieve(复合服务. 多蓝图: vector search, keywords search, web browser...): 7040
 
