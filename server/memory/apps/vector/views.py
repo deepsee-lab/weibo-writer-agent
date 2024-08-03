@@ -1,11 +1,13 @@
+import uuid
 from typing import List
 from loguru import logger
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
-
-# import uuid
-#
-# print(uuid.uuid4())
+from apps.vector.vector_store.milvus_class import MilvusClass
+from apps.vector.api import (
+    get_embeddings,
+    get_docx2text,
+)
 
 router = APIRouter(
     prefix="/vector"
@@ -13,7 +15,7 @@ router = APIRouter(
 
 
 class KbBaseItem(BaseModel):
-    kb_id: str = Field(description='32-bit UUID without -', default='0' * 32)
+    kb_id: str = Field(description='32-bit UUID without -', default='uuid' + '0' * 28)
 
 
 class KbAddItem(KbBaseItem):
@@ -21,6 +23,7 @@ class KbAddItem(KbBaseItem):
     kb_desc: str = Field(default="kb_desc")
     vector_store_name: str = Field(default="milvus")
     embedding_model_name: str = Field(default="bge-large-zh-v1.5")
+    dim: int = Field(default=1024)
 
 
 class KbIdsItem(BaseModel):
@@ -81,6 +84,10 @@ def kb_list_all():
 def kb_add_one(item: KbAddItem):
     logger.info('run kb_add_one')
     logger.info(item)
+    kb_id = item.kb_id
+    dim = item.dim
+    milvus_class = MilvusClass(kb_id)
+    milvus_class.create_collection(dim=dim)
     return Response(success=True, code='000000', message='success', data={})
 
 
@@ -142,8 +149,18 @@ def doc_list_all(item: KbBaseItem):
 
 @router.post("/doc_add_one")
 def doc_add_one(item: DocAddItem):
+    milvus_class = MilvusClass(item.kb_id)
     logger.info('run doc_add_one')
     logger.info(item)
+    doc_path = item.doc_path
+    text = get_docx2text(doc_path)
+    sentences = str(text).split('。')
+    vectors = get_embeddings(sentences)
+    data = [
+        {"id": i, "vector": vectors[i], "text": sentences[i], "subject": "biology"}
+        for i in range(len(vectors))
+    ]
+    milvus_class.insert_data(data)
     return Response(success=True, code='000000', message='success', data={})
 
 
