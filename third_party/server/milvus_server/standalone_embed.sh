@@ -18,8 +18,8 @@
 
 run_embed() {
     cat << EOF > embedEtcd.yaml
-listen-client-urls: http://0.0.0.0:2390
-advertise-client-urls: http://0.0.0.0:2390
+listen-client-urls: http://0.0.0.0:19530
+advertise-client-urls: http://0.0.0.0:19530
 quota-backend-bytes: 4294967296
 auto-compaction-mode: revision
 auto-compaction-retention: '1000'
@@ -41,7 +41,7 @@ EOF
         -v $(pwd)/user.yaml:/milvus/configs/user.yaml \
         -p 19530:19530 \
         -p 9091:9091 \
-        -p 2390:2390 \
+        -p 19530:19530 \
         --health-cmd="curl -f http://localhost:9091/healthz" \
         --health-interval=30s \
         --health-start-period=90s \
