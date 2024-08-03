@@ -6,7 +6,7 @@ from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 # Local application/library specific imports.
-from apps.document.views import router as private_router
+from apps.document.views import router as document_router
 from configs import config
 
 app = FastAPI(
@@ -27,7 +27,7 @@ app.add_middleware(
     allow_headers=["*"],  # 允许的请求头
 )
 
-app.include_router(private_router)
+app.include_router(document_router)
 
 
 @app.get("/")
