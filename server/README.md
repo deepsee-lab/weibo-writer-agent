@@ -42,7 +42,7 @@ toolkit(原子服务. 多蓝图: 各个toolkit): 6010
 
 memory(复合服务. 多蓝图: db, vector...): 6020
 
-web_parser(原子服务. 多蓝图: search_engine_api, page_parser...): 6030
+web_parser(原子服务. 多蓝图: search_engine_api, page_parser...): 待定
 
 text_chunking(原子服务. 单蓝图): 6040
 
