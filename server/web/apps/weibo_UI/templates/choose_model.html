@@ -59,7 +59,7 @@
                         </select>
                       </div>
                       <div class="col-sm-3">
-                      <form method="post" enctype="multipart/form-data" action="/RAG_Document/upload">
+                      <form method="post" enctype="multipart/form-data" action="/weibo_UI/upload">
                         <div class="row mb-3">
                             <label for="inputNumber" class="col-sm-8 col-form-label">File Upload</label>
                             <div class="col-sm-10">
@@ -81,9 +81,24 @@
                           <option value="1">chroma</option>
                         </select>
                       </div>
+                      <div  class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Temperature:</label>
+                        <div class="col-sm-3">
+                          <input type="range" id="number-selector" name="number-selector" min="0" max="100" step="1" value="50" oninput="updateValue(this)">
+                        </div>
+                        <div class="col-sm-3">
+                          <span id="value-display">50</span>
+                        </div>
+                      </div>
                           <label for="inputPassword" class="col-sm-2 col-form-label">query</label>
                           <div class="col-sm-10">
                             <textarea class="form-control" style="height: 100px" id="query"></textarea>
+                          </div>
+                      <div class="col-sm-3">
+                      </div>
+                          <label for="inputPassword" class="col-sm-2 col-form-label">answer</label>
+                          <div class="col-sm-10">
+                            <textarea class="form-control" style="height: 100px" id="answer"></textarea>
                           </div>
                       <div class="col-sm-3">
                         <button id="submit_model_run" type="submit" class="btn btn-primary">Submit</button>
@@ -112,7 +127,12 @@
   $(function () {
       //页面框架加载完成后代码自动执行
       bindBtn1Event_Task();
+      updateValue(slider);
   })
+  function updateValue(slider){
+    var display = document.getElementById("value-display");
+    display.innerHTML = slider.value;
+  }
   function bindBtn1Event_Task(){
     $("#submit_model_run").click(function () {
           var type_name = document.getElementById("type_select").value; // 获取输入框中的值
@@ -139,7 +159,12 @@
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {
-                      alert(choose_dict['content']);
+                      // 获取<textarea>元素的引用
+                      var textarea = document.getElementById("answer");
+                                            
+                      // 设置<textarea>元素的内容
+                      textarea.innerHTML = choose_dict['content'];
+
                     } else {
                         alert('处理失败');
                     }
