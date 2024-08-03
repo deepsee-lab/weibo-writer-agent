@@ -6,8 +6,8 @@ from apps.vector.views import router as vector_router
 from configs import config
 
 app = FastAPI(
-    title="Memory",
-    description="Memory",
+    title="Retrieve",
+    description="Retrieve",
     version="0.0.1",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -33,7 +33,7 @@ def index():
 
 
 host = '0.0.0.0'
-port = 6020
+port = 7040
 reload = True
 
 logger.info('Server is up and running.')
