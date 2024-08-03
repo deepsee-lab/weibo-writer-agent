@@ -97,9 +97,13 @@ def inference(item: InfItem):
     timeout = item.timeout
 
     llm_result = get_llm_inference(inference_service, messages, model, max_tokens, stream, temperature, timeout)
+
+    rag_result = ''
+
     data = {
         'retrieve_result': retrieve_result,
         'llm_result': llm_result,
+        'rag_result': rag_result,
     }
 
     return Response(success=True, code='000000', message='success', data=data)
