@@ -6,15 +6,21 @@ from loguru import logger
 from pydantic import BaseModel, Field
 from fastapi import APIRouter
 # Local application/library specific imports.
+from apps.private.llms.ollama_inference import inf
 
 router = APIRouter(
     prefix="/private"
 )
 
 
+class MessageItem(BaseModel):
+    role: str = Field(description="Choose from system, user, assistant...", default="user")
+    content: str = Field(default="prompt")
+
+
 class InfItem(BaseModel):
-    messages: List[str] = Field(description="Please refer to openai to write")
     inference_service: str = Field(description="Choose from ollama, xinference, api...", default="ollama")
+    messages: List[MessageItem] = Field(description="Please refer to openai to write")
     model: str = Field(default="qwen2:1.5b-instruct-fp16")
     max_tokens: int = Field(default=4096)
     stream: bool = Field(default=False)
@@ -34,7 +40,7 @@ def inference(item: InfItem):
     logger.info('run inference')
     logger.info('item: {}'.format(item))
 
-    result = 'llm result'
+    result = inf(**item.model_dump())
     data = {
         'result': result,
     }
