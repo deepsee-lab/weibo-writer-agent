@@ -30,6 +30,9 @@ logger.info('ROOT_DIR: {}'.format(ROOT_DIR))
 cst_tz = pytz.timezone('Asia/Shanghai')
 
 # EMBEDDING
+# MODEL_NAME = 'moka-ai/m3e-small'
+# MODEL_NAME = 'moka-ai/m3e-base'
+# MODEL_NAME = 'moka-ai/m3e-large'
 # MODEL_NAME = 'BAAI/bge-small-zh-v1.5'
 # MODEL_NAME = 'BAAI/bge-base-zh-v1.5'
 MODEL_NAME = 'BAAI/bge-large-zh-v1.5'
