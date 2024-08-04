@@ -5,12 +5,12 @@
 {% block content %}
 
     <div class="pagetitle">
-      <h1>Choose project</h1>
+      <h1>Self media</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/home/">Home</a></li>
           <li class="breadcrumb-item">AI</li>
-          <li class="breadcrumb-item active">choose model</li>
+          <li class="breadcrumb-item active">self media</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -80,11 +80,15 @@
                           <span id="value-display">50</span>
                         </div>
                       </div>
-                          <label for="inputPassword" class="col-sm-2 col-form-label">query</label>
+                          <label for="inputPassword" class="col-sm-2 col-form-label">title</label>
                           <div class="col-sm-10">
-                            <textarea class="form-control" style="height: 100px" id="query"></textarea>
+                            <textarea class="form-control" style="height: 100px" id="title"></textarea>
                           </div>
                       <div class="col-sm-3">
+                        <label for="inputPassword" class="col-sm-2 col-form-label">thumb_media_id</label>
+                          <div class="col-sm-10">
+                            <textarea class="form-control" style="height: 100px" id="thumb_media_id"></textarea>
+                          </div>
                       </div>
                           <label for="inputPassword" class="col-sm-2 col-form-label">answer</label>
                           <div class="col-sm-10">
@@ -129,9 +133,9 @@
           var model_name = document.getElementById("model_select").value; // 获取输入框中的值
           var split_document = document.getElementById("split_document").value; // 获取输入框中的值
           var vector_select = document.getElementById("vector_select").value; // 获取输入框中的值
-          var query = document.getElementById("query").value; // 获取输入框中的值
+          var title = document.getElementById("title").value; // 获取输入框中的值
+          var thumb_media_id = document.getElementById("thumb_media_id").value; // 获取输入框中的值
           console.log('hello')
-          console.log(query)
           if (type_name=="-1") {
             alert('type_name 请选择!')
           } else if (model_name=="-1") {
@@ -140,13 +144,13 @@
             alert('split_document 请选择!')
           } else if (vector_select=="-1") {
             alert('vector_select 请选择!')
-          } else if (query=="") {
-            alert('query 请填写!')
+          } else if (title=="") {
+            alert('title 请填写!')
           } else {
             $.ajax({
-                url:"/weibo_UI/model_run",
+                url:"/weibo_UI/self_media",
                 type:"post",
-                data:JSON.stringify({'type_name':type_name,'model_name':model_name,'split_document':split_document,'vector_select':vector_select,"query":query}),
+                data:JSON.stringify({'type_name':type_name,'model_name':model_name,'split_document':split_document,'vector_select':vector_select,"title":title,"thumb_media_id":thumb_media_id}),
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {

@@ -33,6 +33,6 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:////{}'.format(CUS_DB_PATH)
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 # upload file format
 MAX_CONTENT_LENGTH = 160 * 1024 * 1024
-UPLOAD_FOLDER = '/mnt/d/code/python/webo_write/flask/weibo-writer-agent/server/web/apps/weibo_UI/data/'
+UPLOAD_FOLDER = ROOT_DIR+'/apps/weibo_UI/data/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 #

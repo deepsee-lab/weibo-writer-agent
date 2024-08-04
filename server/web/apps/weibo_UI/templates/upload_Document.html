@@ -15,8 +15,6 @@
       </nav>
     </div><!-- End Page Title -->
 
-    <p>pls choose WAT data file path</p>
-
     <section class="section">
       <div class="row">
 
@@ -24,18 +22,34 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Upload datas</h5>
-              <form method="post" enctype="multipart/form-data" action="/upload/">
-                <select name="type_name_select" class="form-select" aria-label="Default select example">
-                  <option value="-1">--请选择--</option>
-                </select>
+              <form method="post" enctype="multipart/form-data" action="/weibo_UI/upload">
                 <div class="row mb-3">
                     <label for="inputNumber" class="col-sm-8 col-form-label">File Upload</label>
                     <div class="col-sm-10">
                       <input class="form-control" type="file" id="formFile" name="file" multiple="">
                     </div>
+                    <input type="submit" value="上传" class="btn btn-primary">
                 </div>
-                <input type="submit" value="上传" class="btn btn-primary">
               </form>
+              <div class="col-sm-3">
+                <select id="model_select" name="choose_select" class="form-select" aria-label="Default select example">
+                  <option value="-1">--请选择模型名称--</option>
+                  <option value="1">bge</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <select id="mvector_select" name="choose_select" class="form-select" aria-label="Default select example">
+                  <option value="-1">--请选择向量数据库名称--</option>
+                  <option value="1">milvs</option>
+                </select>
+              </div>
+              <label for="inputPassword" class="col-sm-2 col-form-label">desc</label>
+              <div class="col-sm-10">
+                  <textarea class="form-control" style="height: 100px" id="desc"></textarea>
+              </div>
+              <div class="col-sm-3">
+                <button id="submit_kb" type="submit" class="btn btn-primary">Submit</button>
+              </div>
             </div>
           </div>
         </div>
@@ -49,5 +63,49 @@
 
 {% block js %}
   <script src="/static/js/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript">
 
+    $(function () {
+        //页面框架加载完成后代码自动执行
+        bindBtn1Event_Task();
+    })
+    function bindBtn1Event_Task(){
+      $("#submit_kb").click(function () {
+            var model_select = document.getElementById("model_select").value; // 获取输入框中的值
+            var mvector_select = document.getElementById("mvector_select").value; // 获取输入框中的值
+            var desc = document.getElementById("desc").value; // 获取输入框中的值
+            var formFile= document.getElementById("formFile").value; 
+            if (model_select=="-1") {
+              alert('model_select 请选择!')
+            } else if (mvector_select=="-1") {
+              alert('mvector_select 请选择!')
+            } else if (desc=="") {
+              alert('desc 请填写!')
+            } else {
+              $.ajax({
+                  url:"/weibo_UI/kb_run",
+                  type:"post",
+                  data:JSON.stringify({'formFile':formFile,'model_select':model_select,'mvector_select':mvector_select,'desc':desc}),
+                  contentType: 'application/json; charset=UTF-8',
+                  success: function(choose_dict) {
+                      if (choose_dict['result']) {
+                        // 获取<textarea>元素的引用
+                        var textarea = document.getElementById("answer");
+                                              
+                        // 设置<textarea>元素的内容
+                        textarea.innerHTML = choose_dict['content'];
+  
+                      } else {
+                          alert('处理失败');
+                      }
+                  },
+  
+              })
+            }
+  
+        })
+        
+    }
+  
+  </script>
   {% endblock %}
