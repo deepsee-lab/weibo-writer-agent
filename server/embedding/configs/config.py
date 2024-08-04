@@ -30,8 +30,9 @@ logger.info('ROOT_DIR: {}'.format(ROOT_DIR))
 cst_tz = pytz.timezone('Asia/Shanghai')
 
 # EMBEDDING
+# MODEL_NAME = 'BAAI/bge-small-zh-v1.5'
 # MODEL_NAME = 'BAAI/bge-base-zh-v1.5'
-MODEL_NAME = 'bge-small-zh-v1.5'
+MODEL_NAME = 'BAAI/bge-large-zh-v1.5'
 
 logger.info('MODEL_NAME: {}'.format(MODEL_NAME))
 
