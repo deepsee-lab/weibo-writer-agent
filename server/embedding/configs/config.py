@@ -30,6 +30,7 @@ logger.info('ROOT_DIR: {}'.format(ROOT_DIR))
 cst_tz = pytz.timezone('Asia/Shanghai')
 
 # EMBEDDING
+# MODEL_NAME = 'nvidia/NV-Embed-v1'
 # MODEL_NAME = 'shibing624/text2vec-base-chinese'
 # MODEL_NAME = 'moka-ai/m3e-small'
 # MODEL_NAME = 'moka-ai/m3e-base'
