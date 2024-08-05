@@ -37,6 +37,14 @@ class MessageItem(BaseModel):
 
 
 class InfItem(BaseModel):
+    # retrieve
+    # vector
+    vector_search: bool = Field(default=True)
+    kb_id: str = Field(default="uuid" + "0" * 28)
+    history_count: int = Field(default=10)
+    top_k: int = Field(default=10)
+    threshold_value: float = Field(default=0.0)
+    retrieve_only: bool = Field(default=False)
     # llm
     messages: List[MessageItem] = Field(description="Please refer to openai to write")
     inference_service: str = Field(description="Choose from ollama, xinference, api...", default="ollama")
@@ -45,13 +53,6 @@ class InfItem(BaseModel):
     stream: bool = Field(default=False)
     temperature: float = Field(default=0.8)
     timeout: int = Field(default=60)
-    # rag
-    rag: bool = Field(default=False)
-    kb_id: str = Field(default="uuid" + "0" * 28)
-    history_count: int = Field(default=10)
-    top_k: int = Field(default=10)
-    threshold_value: float = Field(default=0.0)
-    retrieve_only: bool = Field(default=False)
 
 
 class Response(BaseModel):
@@ -82,7 +83,6 @@ def inference(item: InfItem):
     messages = item.messages
     messages = [{'role': message.role, 'content': message.content} for message in messages]
     query = messages[-1]['content']
-    # query = '你好'
     top_k = item.top_k
     output_fields = ["text"]
     retrieve_result = get_retrieve_inference(kb_id, query, top_k, output_fields)
@@ -98,7 +98,11 @@ def inference(item: InfItem):
 
     llm_result = get_llm_inference(inference_service, messages, model, max_tokens, stream, temperature, timeout)
 
+    logger.info('llm_result: {}'.format(llm_result))
+
     rag_result = ''
+
+    logger.info('rag_result: {}'.format(rag_result))
 
     data = {
         'retrieve_result': retrieve_result,
