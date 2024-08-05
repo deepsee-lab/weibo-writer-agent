@@ -3,8 +3,8 @@ from typing import List
 from loguru import logger
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
-from apps.vector.vector_store.milvus_class import MilvusClass
-from apps.vector.api import (
+from apps.vector_database.vector_store.milvus_class import MilvusClass, client
+from apps.vector_database.api import (
     get_embeddings,
     get_docx2text,
 )
@@ -47,6 +47,13 @@ class DocAddItem(DocBaseItem):
 
 class DocDropItem(KbBaseItem):
     doc_ids: List[str] = Field(default=['0' * 32])
+
+
+class SearchItem(BaseModel):
+    kb_id: str = Field(description='32-bit UUID without -', default='uuid' + '0' * 28)
+    query: str
+    top_k: int = Field(default=5)
+    output_fields: List[str] = Field(default=["text"])
 
 
 class Response(BaseModel):
@@ -201,5 +208,26 @@ def doc_del_mul(item: DocDropItem):
     data = {
         'kb_id': 'kb_id',
         'doc_list': kb_list,
+    }
+    return Response(success=True, code='000000', message='success', data=data)
+
+
+@router.post("/search")
+def search(item: SearchItem):
+    logger.info('run search')
+    logger.info(item)
+    kb_id = item.kb_id
+    query = item.query
+    top_k = item.top_k
+    output_fields = item.output_fields
+    query_vectors = get_embeddings([query])
+    results = client.search(
+        collection_name=kb_id,
+        data=query_vectors,
+        limit=top_k,
+        output_fields=output_fields,
+    )
+    data = {
+        'results': results
     }
     return Response(success=True, code='000000', message='success', data=data)

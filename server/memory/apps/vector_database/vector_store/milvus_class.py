@@ -1,5 +1,5 @@
 from pymilvus import MilvusClient
-from apps.vector.api import get_embeddings
+from apps.vector_database.api import get_embeddings
 
 client = MilvusClient(
     uri="http://localhost:19530",
