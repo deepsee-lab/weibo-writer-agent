@@ -152,25 +152,77 @@ def self_media():
 def submit_kb():
     if request.method == "POST":
         data = request.get_json()
-        formFile=data['formFile']
-        model_select=data['model_select']
-        mvector_select=data['mvector_select']
+        #({'Dim':Dim,'Kb_id':Kb_id,'Kb_name':Kb_name,'desc':desc,'vector_store_name':vector_store_name,'embedding_model_name':embedding_model_name}),
+        Dim=data['Dim']
+        Dim=int(Dim)
+        Kb_id=data['Kb_id']
+        Kb_name=data['Kb_name']
         desc=data['desc']
-        url = 'http://127.0.0.1:4010/private/inference'
+        vector_store_name=data['vector_store_name']
+        embedding_model_name=data['embedding_model_name']
+        url = 'http://127.0.0.1:6020/vector/kb_add_one'
         json_data = {
-            
+          "kb_id": Kb_id,
+          "kb_name": Kb_name,
+          "kb_desc": desc,
+          "vector_store_name": vector_store_name,
+          "embedding_model_name": embedding_model_name,
+          "dim": Dim
         }
         # 发送请求并存储响应
         response = requests.post(url, json=json_data)
-        print(response.json())
+        #print(response.json())
         # 检查响应状态代码
         res=''
         answer=response.json()
         choose_dict={}
         choose_dict['result']=0
-        
-        choose_dict['content']=res
+        if answer['success']:
+            choose_dict['result']=1
+        #choose_dict['content']=res
         #choose_dict['content']=response
         return jsonify(choose_dict)
+    username="lnform"
+    return render_template('upload_Document.html',username=username)
+
+@bp.route('/submit_doc',methods=["POST","GET"])
+def submit_doc():
+    if request.method == "POST":
+        data = request.get_json()
+        if 'selec_file' in data['Type']:
+            filepath=current_app.config['UPLOAD_FOLDER']
+            files=os.listdir(filepath)
+            file_dict={}
+            file_dict['list']=files
+            return jsonify(file_dict)
+        elif 'add_doc' in data['Type']:
+            #Kb_id_doc':Kb_id_doc,'Doc_id':Doc_id,'Doc_name':Doc_name,'doc_file':doc_file,'doc_content_base64':doc_content_base64}),
+            Kb_id_doc=data['Kb_id_doc']
+            Doc_id=data['Doc_id']
+            Doc_name=data['Doc_name']
+            doc_file=data['doc_file']
+            filepath=os.path.join(current_app.config['UPLOAD_FOLDER'], doc_file)
+            doc_content_base64=data['doc_content_base64']
+            url = 'http://127.0.0.1:6020/vector/doc_add_one'
+            json_data = {
+                "kb_id": Kb_id_doc,
+                "doc_id": Doc_id,
+                "doc_name": Doc_name,
+                "doc_path": filepath,
+                "doc_content_base64": doc_content_base64
+            }
+            # 发送请求并存储响应
+            response = requests.post(url, json=json_data)
+            #print(response.json())
+            # 检查响应状态代码
+            res=''
+            answer=response.json()
+            choose_dict={}
+            choose_dict['result']=0
+            if answer['success']:
+                choose_dict['result']=1
+            #choose_dict['content']=res
+            #choose_dict['content']=response
+            return jsonify(choose_dict)
     username="lnform"
     return render_template('upload_Document.html',username=username)
