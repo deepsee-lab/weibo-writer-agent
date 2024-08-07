@@ -47,6 +47,8 @@ MODEL_NAME = 'BAAI/bge-large-zh-v1.5'
 logger.info('MODEL_NAME: {}'.format(MODEL_NAME))
 
 MODEL_DIR = os.getenv('MODEL_DIR')
+if not MODEL_DIR:
+    raise ValueError('.env MODEL_DIR not set')
 MODEL_PATH = os.path.join(MODEL_DIR, MODEL_NAME)
 if os.path.exists(MODEL_PATH):
     logger.info('MODEL_PATH: {}'.format(MODEL_PATH))

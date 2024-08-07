@@ -2,7 +2,7 @@ import uvicorn
 from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from apps.vector.views import router as vector_router
+from apps.vector_database.views import router as vector_router
 from configs import config
 
 app = FastAPI(
