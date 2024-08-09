@@ -46,29 +46,37 @@
                       <div class="col-sm-3">
                         <select id="type_select" name="type_name_select" class="form-select" aria-label="Default select example">
                           <option value="-1">--请选择模型框架--</option>
-                          <option value="1">ollama</option>
-                          <option value="2">xinference</option>
-                          <option value="3">API</option>
+                          <option value="ollama">ollama</option>
+                          <option value="xinference">xinference</option>
+                          <option value="API">API</option>
                         </select>
                       </div>
                       <div class="col-sm-3">
                         <select id="model_select" name="choose_select" class="form-select" aria-label="Default select example">
                           <option value="-1">--请选择模型名称--</option>
-                          <option value="1">qwen2:7b</option>
-                          <option value="2">chatglm3:6b</option>
+                          <option value="qwen2:7b">qwen2:7b</option>
+                          <option value="chatglm3:6b">chatglm3:6b</option>
                         </select>
                       </div>
-                      
-                      <div class="col-sm-3">
-                        <select id="split_document" name="split_document" class="form-select" aria-label="Default select example">
-                          <option value="-1">--请选择split文档方法--</option>
-                          <option value="1">normal</option>
+                      <form method="post" enctype="multipart/form-data" action="/weibo_UI/Pic_upload">
+                        <div class="row mb-3">
+                            <label for="Png" class="col-sm-8 col-form-label">Picture Upload</label>
+                            <div class="col-sm-10">
+                              <input class="form-control" type="file" id="Png" name="Png" multiple="">
+                            </div>
+                            <input type="submit" value="上传" class="btn btn-primary">
+                        </div>
+                      </form>
+                      <div class="col-sm-13">
+                        <label for="png_file">请选择封面图片，如没有，请选择上传:</label>
+                        <select id="png_file" name="png_file" class="form-select" aria-label="Default select example">
+                          <option value="-1">--select_png_file--</option>
                         </select>
                       </div>
                       <div class="col-sm-3">
                         <select id="vector_select" name="vector_select" class="form-select" aria-label="Default select example">
                           <option value="-1">--请选择向量数据库--</option>
-                          <option value="1">chroma</option>
+                          <option value="chroma">chroma</option>
                         </select>
                       </div>
                       <div  class="row mb-3">
@@ -131,7 +139,7 @@
     $("#submit_model_run").click(function () {
           var type_name = document.getElementById("type_select").value; // 获取输入框中的值
           var model_name = document.getElementById("model_select").value; // 获取输入框中的值
-          var split_document = document.getElementById("split_document").value; // 获取输入框中的值
+          var png_file = document.getElementById("png_file").value; // 获取输入框中的值
           var vector_select = document.getElementById("vector_select").value; // 获取输入框中的值
           var title = document.getElementById("title").value; // 获取输入框中的值
           var thumb_media_id = document.getElementById("thumb_media_id").value; // 获取输入框中的值
@@ -140,8 +148,8 @@
             alert('type_name 请选择!')
           } else if (model_name=="-1") {
             alert('model_name 请选择!')
-          } else if (split_document=="-1") {
-            alert('split_document 请选择!')
+          } else if (png_file=="-1") {
+            alert('png_file 请选择!')
           } else if (vector_select=="-1") {
             alert('vector_select 请选择!')
           } else if (title=="") {
@@ -150,7 +158,7 @@
             $.ajax({
                 url:"/weibo_UI/self_media",
                 type:"post",
-                data:JSON.stringify({'type_name':type_name,'model_name':model_name,'split_document':split_document,'vector_select':vector_select,"title":title,"thumb_media_id":thumb_media_id}),
+                data:JSON.stringify({'Type':'send_draft','type_name':type_name,'png_file':png_file,'model_name':model_name,'vector_select':vector_select,"title":title,"thumb_media_id":thumb_media_id}),
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {
@@ -169,6 +177,30 @@
           }
 
       })
+      ("#png_file").click(function () {
+              console.log('hello world')
+              $.ajax({
+                  url:"/weibo_UI/self_media",
+                  type:"post",
+                  data:JSON.stringify({'Type':'selec_picture'}),
+                  contentType: 'application/json; charset=UTF-8',
+                  success: function(file_dict) {
+                    file_list=file_dict['list']
+                      $("#png_file").find("option").remove();
+                      count = $('#png_file').find('file_list').length
+                      //console.log(count)
+                      $.each(file_list, function(index,item) {
+                        if (!count) {
+                          $("#png_file").append(  //此处向select中循环绑定数据
+                          "<option value="+item+">" + item+ "</option>");
+                        }
+                      });
+                  },
+  
+              })
+            
+  
+        })
       
   }
 
