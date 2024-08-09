@@ -38,13 +38,13 @@ class MessageItem(BaseModel):
 
 class InfItem(BaseModel):
     # retrieve
+    # common
+    retrieve_only: bool = Field(default=False)
     # vector
     vector_search: bool = Field(default=True)
     kb_id: str = Field(default="uuid" + "0" * 28)
-    history_count: int = Field(default=10)
     top_k: int = Field(default=10)
     threshold_value: float = Field(default=0.0)
-    retrieve_only: bool = Field(default=False)
     # llm
     messages: List[MessageItem] = Field(description="Please refer to openai to write")
     inference_service: str = Field(description="Choose from ollama, xinference, api...", default="ollama")
@@ -53,6 +53,8 @@ class InfItem(BaseModel):
     stream: bool = Field(default=False)
     temperature: float = Field(default=0.8)
     timeout: int = Field(default=60)
+    # 多轮对话场景
+    # history_count: int = Field(default=10)
 
 
 class Response(BaseModel):
@@ -80,12 +82,18 @@ def inference(item: InfItem):
     logger.info('item: {}'.format(item))
 
     kb_id = item.kb_id
+    threshold_value = item.threshold_value
     messages = item.messages
     messages = [{'role': message.role, 'content': message.content} for message in messages]
     query = messages[-1]['content']
     top_k = item.top_k
     output_fields = ["text"]
     retrieve_result = get_retrieve_inference(kb_id, query, top_k, output_fields)
+    retrieve_result = [[item for item in group if item['distance'] >= threshold_value] for group in retrieve_result]
+    retrieve_text_list = [
+        f"[{i + 1}] distance: {item['distance']}\ntext: {item['entity']['text']}"
+        for i, item in enumerate(retrieve_result[0])
+    ]
 
     logger.info('retrieve_result: {}'.format(retrieve_result))
 
@@ -96,18 +104,33 @@ def inference(item: InfItem):
     temperature = item.temperature
     timeout = item.timeout
 
-    llm_result = get_llm_inference(inference_service, messages, model, max_tokens, stream, temperature, timeout)
+    retrieve_only = item.retrieve_only
 
-    logger.info('llm_result: {}'.format(llm_result))
+    # 默认是用户
+    query = messages[-1]['content']
+    base_prompt = """
+已知```
+{}
+```
+请回答`{}`
+    """.strip()
+    prompt = base_prompt.format('\n\n'.join(retrieve_text_list), query)
+    messages[-1]['content'] = prompt
 
-    rag_result = ''
+    logger.info('prompt: {}'.format(prompt))
+    logger.info('messages: {}'.format(messages))
+
+    if retrieve_only:
+        rag_result = None
+    else:
+        # TODO: prompt_template(contains cus), inference_template(contains cus)
+        rag_result = get_llm_inference(inference_service, messages, model, max_tokens, stream, temperature, timeout)
 
     logger.info('rag_result: {}'.format(rag_result))
 
     data = {
-        'retrieve_result': retrieve_result,
-        'llm_result': llm_result,
         'rag_result': rag_result,
+        'retrieve_result': retrieve_result,
     }
 
     return Response(success=True, code='000000', message='success', data=data)
