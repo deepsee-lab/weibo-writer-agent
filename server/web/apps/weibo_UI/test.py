@@ -1,20 +1,10 @@
-# post
-import requests
-
-url = 'http://127.0.0.1:4010/private/inference'
-json_data = {
-    "messages": [
-        {
-          "role": "user",
-          "content": "鼠标是什么形状"
-        }
-    ],
-    "inference_service": "ollama",
-    "model": "qwen2:1.5b-instruct-fp16",
-    "max_tokens": 4096,
-    "stream": False,
-    "temperature": 0.8,
-    "timeout": 60
-}
-res = requests.post(url, json=json_data)
-print(res.json())
+def get_embeddings(texts, model="text-embedding-ada-002", dimensions=None):
+    '''封装 OpenAI 的 Embedding 模型接口'''
+    if model == "text-embedding-ada-002":
+        dimensions = None
+    if dimensions:
+        data = client.embeddings.create(
+            input=texts, model=model, dimensions=dimensions).data
+    else:
+        data = client.embeddings.create(input=texts, model=model).data
+    return [x.embedding for x in data]

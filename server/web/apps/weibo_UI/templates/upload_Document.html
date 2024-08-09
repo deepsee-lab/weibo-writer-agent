@@ -17,11 +17,10 @@
 
     <section class="section">
       <div class="row">
-
         <div class="col-lg-6">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Doc</h5>
+              <h5 class="card-title">Upload file</h5>
               <form method="post" enctype="multipart/form-data" action="/weibo_UI/upload">
                 <div class="row mb-3">
                     <label for="inputNumber" class="col-sm-8 col-form-label">File Upload</label>
@@ -31,6 +30,14 @@
                     <input type="submit" value="上传" class="btn btn-primary">
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card">
+            
+            <div class="card-body">
+              <h5 class="card-title">Doc</h5>
               <div class="col-sm-16">
                 <label for="Kb_id_doc">Kb_id:</label>
                 <input type="text" id="Kb_id_doc" name="Kb_id_doc"  size="30" />
@@ -44,6 +51,7 @@
                 <input type="text" id="Doc_name" name="Doc_name"  size="30" />
               </div>
               <div class="col-sm-13">
+                <label for="doc_file">请选择doc文件，如没有，请选择上传:</label>
                 <select id="doc_file" name="doc_file" class="form-select" aria-label="Default select example">
                   <option value="-1">--select_doc_file--</option>
                 </select>
@@ -98,7 +106,38 @@
             </div>
           </div>
         </div>
-        
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">File Parsing</h5>
+              <div class="col-sm-16">
+                <label for="doc_id_parsing">doc_id:</label>
+                <input type="text" id="doc_id_parsing" name="doc_id_parsing"  size="30" />
+              </div>
+              <div class="col-sm-16">
+                <label for="doc_name_parsing">doc_name:</label>
+                <input type="text" id="doc_name_parsing" name="doc_name_parsing"  size="30" />
+              </div>
+              <div class="col-sm-13">
+                <label for="doc_file_parsing">请选择doc文件，如没有，请选择上传:</label>
+                <select id="doc_file_parsing" name="doc_file_parsing" class="form-select" aria-label="Default select example">
+                  <option value="-1">--select_doc_file--</option>
+                </select>
+              </div>
+              <div class="col-sm-13">
+                <label for="doc_file_parsing_way">请选择file parsing方式:</label>
+                <select id="doc_file_parsing_way" name="doc_file_parsing_way" class="form-select" aria-label="Default select example">
+                  <option value="-1">--select_doc_file--</option>
+                  <option value="doc_to_json">--doc_to_json--</option>
+                  <option value="doc_to_text">--doc_to_text--</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <button id="submit_file_parsing" type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
       </div>
     </section>
@@ -106,7 +145,7 @@
 {% endblock %}
 
 {% block js %}
-  <script src="/static/js/jquery-3.6.0.min.js"></script>
+  <script src="/weibo_UI/static/js/jquery-3.6.0.min.js"></script>
   <script type="text/javascript">
 
     $(function () {
@@ -152,7 +191,7 @@
   
         })
         $("#doc_file").click(function () {
-            
+              console.log('hello world')
               $.ajax({
                   url:"/weibo_UI/submit_doc",
                   type:"post",
@@ -173,7 +212,29 @@
   
               })
             
+        })
+        $("#doc_file_parsing").click(function () {
+              console.log('hello world')
+              $.ajax({
+                  url:"/weibo_UI/submit_file_parsing",
+                  type:"post",
+                  data:JSON.stringify({'Type':'selec_file'}),
+                  contentType: 'application/json; charset=UTF-8',
+                  success: function(file_dict) {
+                    file_list=file_dict['list']
+                      $("#doc_file_parsing").find("option").remove();
+                      count = $('#doc_file_parsing').find('file_list').length
+                      //console.log(count)
+                      $.each(file_list, function(index,item) {
+                        if (!count) {
+                          $("#doc_file_parsing").append(  //此处向select中循环绑定数据
+                          "<option value="+item+">" + item+ "</option>");
+                        }
+                      });
+                  },
   
+              })
+            
         })
         $("#submit_doc").click(function () {
             var Kb_id_doc = document.getElementById("Kb_id_doc").value; // 获取输入框中的值
@@ -193,7 +254,7 @@
               alert('doc_content_base64 请选择!')
             } else {
               $.ajax({
-                  url:"/weibo_UI/submit_kb",
+                  url:"/weibo_UI/submit_doc",
                   type:"post",
                   data:JSON.stringify({'Type':'add_doc','Kb_id_doc':Kb_id_doc,'Doc_id':Doc_id,'Doc_name':Doc_name,'doc_file':doc_file,'doc_content_base64':doc_content_base64}),
                   contentType: 'application/json; charset=UTF-8',
@@ -202,6 +263,37 @@
                           alert('添加doc成功');
                       } else {
                           alert('添加doc失败');
+                      }
+                  },
+  
+              })
+            }
+  
+        })
+        $("#submit_file_parsing").click(function () {
+            var doc_id_parsing = document.getElementById("doc_id_parsing").value; // 获取输入框中的值
+            var doc_name_parsing = document.getElementById("doc_name_parsing").value; // 获取输入框中的值
+            var doc_file_parsing = document.getElementById("doc_file_parsing").value; // 获取输入框中的值
+            var doc_file_parsing_way = document.getElementById("doc_file_parsing_way").value; // 获取输入框中的值
+            if (doc_id_parsing=="") {
+              alert('doc_id_parsing 请填写!')
+            } else if (doc_name_parsing=="") {
+              alert('doc_name_parsing 请填写!')
+            } else if (doc_file_parsing=="") {
+              alert('doc_file_parsing 请填写!')
+            } else if (doc_file_parsing_way=="-1") {
+              alert('doc_file_parsing_way 请选择!')
+            } else {
+              $.ajax({
+                  url:"/weibo_UI/submit_file_parsing",
+                  type:"post",
+                  data:JSON.stringify({'Type':'add_file_parsing','doc_id_parsing':doc_id_parsing,'doc_name_parsing':doc_name_parsing,'doc_file_parsing':doc_file_parsing,'doc_file_parsing_way':doc_file_parsing_way}),
+                  contentType: 'application/json; charset=UTF-8',
+                  success: function(choose_dict) {
+                      if (choose_dict['result']) {
+                          alert('file parsing成功');
+                      } else {
+                          alert('file parsing失败');
                       }
                   },
   

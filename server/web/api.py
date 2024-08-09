@@ -36,7 +36,7 @@ with app.app_context():
     db.create_all()
 
 host = '127.0.0.1'
-port = 5000
+port = 9020
 
 logger.info('Server is up and running.')
 logger.info('Please visit http://{}:{}/demo/heartbeat to verify.'.format(host, port))
