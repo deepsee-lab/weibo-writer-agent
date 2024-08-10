@@ -7,7 +7,7 @@ load_dotenv()
 
 def get_stable_access_token(appid, secret):
     # 确保访问ip在白名单里面
-    url = 'https://sh.api.weixin.qq.com/cgi-bin/stable_token'
+    url = 'https://api.weixin.qq.com/cgi-bin/stable_token'
     json_data = {
         "grant_type": "client_credential",
         "appid": appid,

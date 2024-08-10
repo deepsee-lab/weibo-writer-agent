@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 headers = {'Content-Type': 'application/json; charset=utf-8'}
-url = 'https://sh.api.weixin.qq.com/cgi-bin/draft/add?access_token={}'.format(os.getenv('access_token'))
+url = 'https://api.weixin.qq.com/cgi-bin/draft/add?access_token={}'.format(os.getenv('access_token'))
 
 
 def add_draft(TITLE, CONTENT, THUMB_MEDIA_ID):
@@ -41,7 +41,7 @@ def add_draft(TITLE, CONTENT, THUMB_MEDIA_ID):
                 "content": CONTENT,
                 # "content_source_url": CONTENT_SOURCE_URL,
                 "thumb_media_id": THUMB_MEDIA_ID,
-                # "need_open_comment": 0,
+                "need_open_comment": 1,
                 # "only_fans_can_comment": 0,
                 # "pic_crop_235_1": pic_crop_235_1,
                 # "pic_crop_1_1": pic_crop_1_1
@@ -71,7 +71,8 @@ def run():
     pic_crop_235_1 = None
     pic_crop_1_1 = None
 
-    add_draft(TITLE, CONTENT, THUMB_MEDIA_ID)
+    result = add_draft(TITLE, CONTENT, THUMB_MEDIA_ID)
+    print(result)
 
 
 if __name__ == '__main__':
