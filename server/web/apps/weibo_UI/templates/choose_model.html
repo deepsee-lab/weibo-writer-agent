@@ -60,24 +60,28 @@
                       </div>
                       
                       <div class="col-sm-3">
-                        <select id="split_document" name="split_document" class="form-select" aria-label="Default select example">
-                          <option value="-1">--请选择split文档方法--</option>
-                          <option value="1">normal</option>
+                        <select id="KB_id" name="KB_id" class="form-select" aria-label="Default select example">
+                          <option value="-1">--请选择知识库的kb_id--</option>
+                          <option value="uuid0000000000000000000000000111">uuid0000000000000000000000000111</option>
+                          <option value="uuid0000000000000000000000000110">uuid0000000000000000000000000110</option>
                         </select>
                       </div>
-                      <div class="col-sm-3">
-                        <select id="vector_select" name="vector_select" class="form-select" aria-label="Default select example">
-                          <option value="-1">--请选择向量数据库--</option>
-                          <option value="1">chroma</option>
-                        </select>
+                      <div  class="row mb-3">
+                        <label class="col-sm-2 col-form-label">Top_K:</label>
+                        <div class="col-sm-3">
+                          <input type="range" id="top_selector" name="top_selector" min="0" max="10" step="1" value="5" oninput="updateValue1(this)">
+                        </div>
+                        <div class="col-sm-3">
+                          <span id="value1-display">5</span>
+                        </div>
                       </div>
                       <div  class="row mb-3">
                         <label class="col-sm-2 col-form-label">Temperature:</label>
                         <div class="col-sm-3">
-                          <input type="range" id="number-selector" name="number-selector" min="0" max="100" step="1" value="50" oninput="updateValue(this)">
+                          <input type="range" id="number-selector" name="number-selector" min="0" max="100" step="1" value="50" oninput="updateValue2(this)">
                         </div>
                         <div class="col-sm-3">
-                          <span id="value-display">50</span>
+                          <span id="value2-display">50</span>
                         </div>
                       </div>
                           <label for="inputPassword" class="col-sm-2 col-form-label">query</label>
@@ -119,16 +123,20 @@
       bindBtn1Event_Task();
       updateValue(slider);
   })
-  function updateValue(slider){
-    var display = document.getElementById("value-display");
+  function updateValue1(slider){
+    var display = document.getElementById("value1-display");
+    display.innerHTML = slider.value;
+  }
+  function updateValue2(slider){
+    var display = document.getElementById("value2-display");
     display.innerHTML = slider.value;
   }
   function bindBtn1Event_Task(){
     $("#submit_model_run").click(function () {
           var type_name = document.getElementById("type_select").value; // 获取输入框中的值
           var model_name = document.getElementById("model_select").value; // 获取输入框中的值
-          var split_document = document.getElementById("split_document").value; // 获取输入框中的值
-          var vector_select = document.getElementById("vector_select").value; // 获取输入框中的值
+          var KB_id = document.getElementById("KB_id").value; // 获取输入框中的值
+          var top_selector = document.getElementById("top_selector").value; // 获取输入框中的值
           var query = document.getElementById("query").value; // 获取输入框中的值
           console.log('hello')
           console.log(query)
@@ -136,17 +144,17 @@
             alert('type_name 请选择!')
           } else if (model_name=="-1") {
             alert('model_name 请选择!')
-          } else if (split_document=="-1") {
-            alert('split_document 请选择!')
-          } else if (vector_select=="-1") {
-            alert('vector_select 请选择!')
+          } else if (KB_id=="-1") {
+            alert('KB_id 请选择!')
+          } else if (top_selector=="-1") {
+            alert('top_selector 请选择!')
           } else if (query=="") {
             alert('query 请填写!')
           } else {
             $.ajax({
                 url:"/weibo_UI/model_run",
                 type:"post",
-                data:JSON.stringify({'type_name':type_name,'model_name':model_name,'split_document':split_document,'vector_select':vector_select,"query":query}),
+                data:JSON.stringify({'type_name':type_name,'model_name':model_name,'KB_id':KB_id,'top_selector':top_selector,"query":query}),
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {
