@@ -4,36 +4,112 @@ import sqlite3,os,json,re,requests
 # Related third party imports.
 from flask import Flask, Blueprint,render_template,request,jsonify,url_for,current_app
 from loguru import logger
-from langchain.chains import RetrievalQA
-from langchain_community.chat_models import ChatOllama
 from werkzeug.utils import secure_filename
+from extends import (
+    db,
+)
 # Local application/library specific imports.
-
+from apps.weibo_UI.rag_run import *
+from apps.weibo_UI.models import weibo_UI_Model
 
 bp = Blueprint("weibo_UI", __name__, url_prefix='/weibo_UI',static_folder='static',template_folder='templates')
 
+
 @bp.route('/index' )
 def show():
-    username="lnform"
+    username='admin'
     return render_template('index.html',username=username)
+
+@bp.route('/login',methods=['GET','POST'] )
+def login():
+    if request.method == 'GET':
+        return render_template('pages_login.html')
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        users = weibo_UI_Model.query.all()
+        #user = User.query.first()
+        for user in users:
+            print(user.name)
+            if user.name==username and user.name==password:
+                #db.session['is_login'] = True
+                #db.session['username'] = username
+                #db.session['pwd'] = password
+                return render_template('index.html',username=username)
+    
+
+@bp.route('/add_user',methods=['GET','POST'] )
+def add_user():
+    if request.method == "POST":
+        data = request.get_json()
+        UserName=data['UserName']
+        Pwd=data['Pwd']
+        new_user = weibo_UI_Model()
+        new_user.name = UserName
+        new_user.text = Pwd
+        db.session.add(new_user)
+        db.session.commit()
+        choose_dict={}
+        choose_dict['result']=1
+        return jsonify(choose_dict)
+    return render_template('add_user.html')
+
+
+@bp.route('/get_by_id',methods=['GET','POST'] )
+def get_by_id():
+    get_user = weibo_UI_Model.query.get(1)  # User.query.filter_by(id=get_id).first()
+    return "编号：{0}，用戶名：{1}，邮箱：{2}".format(get_user.id, get_user.name, get_user.text)
 
 @bp.route('/choose_model')
 def choose_model():
-    username="lnform"
+    username="admin"
     return render_template('choose_model.html',username=username)
         
 @bp.route('/choose_model_post',methods=["POST"])
 def choose_model_post():
     if request.method == "POST":
-        type_name=request.form.get('type_name')
-        choose_dict={}
-        choose_dict['result']=1
-        return jsonify(choose_dict)
+        data = request.get_json()
+        type_name=data['type_name']
+        model_type=['-- pls choose --']
+        if "choose_type" in type_name:
+            try:
+                res=os.popen("ps -ef | grep ollama").read()
+                if 'ollama serve' in res:
+                    model_type.append("ollama")
+            except:
+                logger.info('no ollama')
+            try:
+                res=os.popen("ps -ef | grep xinference").read()
+                if 'xinference' in res:
+                    model_type.append("xinference")
+            except:
+                logger.info('no xinference')
+            choose_dict={}
+            choose_dict['result']=1
+            choose_dict['content']=model_type
+            return jsonify(choose_dict)
+        elif "choose_model" in type_name:
+            type_select=data['type_select']
+            model_list=[]
+            if "ollama" in type_select:
+                try:
+                    res=os.popen("ollama list").read()
+                    models=res.split('\n')
+                    for index_i, item_i in enumerate(models):
+                        if index_i == 0:
+                            continue
+                        model_list.append(item_i.split()[0])
+                        print(item_i.split()[0])
+                except:
+                    logger.info('no ollama')
+            choose_dict={}
+            choose_dict['result']=1
+            choose_dict['content']=model_list
+            return jsonify(choose_dict)
         
 @bp.route('/model_run',methods=["POST"])
 def model_run():
     if request.method == "POST":
-        
         data = request.get_json()
         type_name=data['type_name']
         model_select=data['model_name']
@@ -42,55 +118,10 @@ def model_run():
         top_K=int(top_selector)
         query=data['query']
         logger.info(query)
-        url = 'http://127.0.0.1:6020/vector/search'
-        json_data = {
-            "kb_id": KB_id,
-            "query": query,
-            "top_k": top_K,
-            "output_fields": [
-              "text"
-            ]
-        }
-        # 发送请求并存储响应
-        response_p = requests.post(url, json=json_data)
-        logger.info(response_p.json())
-        # 检查响应状态代码
-        res_p=''
-        instruction_temp=''
-        answer_p=response_p.json()
-        if answer_p['message'] == 'success':
-            # 打印响应文本
-            res_p=answer_p['data']['results']
-            instruction_temp=res_p[0][0]['entity']['text']
-        instruction='你的任务是根据已知内容回答问题，已知：'+instruction_temp
-        prompt = f"""
-        # 目标
-        {instruction}
-
-        # 用户输入
-        {query}
-        """
         url = 'http://127.0.0.1:4010/private/inference'
-        json_data = {
-            "messages": [
-                {
-                  "role": "user",
-                  "content": prompt
-                }
-            ],
-            "inference_service": "ollama",
-            "model": "qwen2:1.5b-instruct-fp16",
-            "max_tokens": 4096,
-            "stream": False,
-            "temperature": 0.8,
-            "timeout": 60
-        }
-        # 发送请求并存储响应
-        response = requests.post(url, json=json_data)
-        print(response.json())
         # 检查响应状态代码
         res=''
-        answer=response.json()
+        answer=vector_model_rag(url,KB_id,top_K,query,type_name,model_select)
         if answer['message'] == 'success':
             # 打印响应文本
             res=answer['data']['result']
@@ -102,7 +133,8 @@ def model_run():
     
 @bp.route('/upload',methods=['GET','POST'])
 def upload():
-    username='lnform'
+    username='admin'
+    status=''
     if request.method == "POST":
         f = request.files['file']
         _filename_ascii_add_strip_re = re.compile(r'[^A-Za-z0-9_\u4E00-\u9FBF\u3040-\u30FF\u31F0-\u31FF.-]')
@@ -113,8 +145,8 @@ def upload():
         if not os.path.exists(current_app.config['UPLOAD_FOLDER']):
             os.mkdir(current_app.config['UPLOAD_FOLDER'])
         f.save(save_path)
-        return 'upload success'
-    return render_template('upload_Document.html',username=username)
+        status="upload ok"
+    return render_template('upload_Document.html',username=username,status=status)
 
 @bp.route('/Pic_upload',methods=['POST'])
 def Pic_upload():
@@ -138,31 +170,14 @@ def self_media():
             type_name=data['type_name']
             model_select=data['model_name']
             #split_document=data['split_document']
-            vector_select=data['vector_select']
+            KB_id=data['KB_select']
             title=data['title']
             thumb_media_id=data['thumb_media_id']
             query='以'+str(title)+'为题，写一篇文章'
             url = 'http://127.0.0.1:4010/private/inference'
-            json_data = {
-                "messages": [
-                    {
-                    "role": "user",
-                    "content": query
-                    }
-                ],
-                "inference_service": "ollama",
-                "model": "qwen2:1.5b-instruct-fp16",
-                "max_tokens": 4096,
-                "stream": False,
-                "temperature": 0.8,
-                "timeout": 60
-            }
-            # 发送请求并存储响应
-            response = requests.post(url, json=json_data)
-            print(response.json())
             # 检查响应状态代码
             res=''
-            answer=response.json()
+            answer=vector_model_rag(url,KB_id,top_K,query,type_name,model_select)
             choose_dict={}
             choose_dict['result']=0
             if answer['message'] == 'success':
@@ -188,7 +203,7 @@ def self_media():
             file_dict={}
             file_dict['list']=files
             return jsonify(file_dict)
-    username="lnform"
+    username="admin"
     return render_template('self_media.html',username=username)
   
 @bp.route('/submit_kb',methods=["POST","GET"])
@@ -225,8 +240,8 @@ def submit_kb():
         #choose_dict['content']=res
         #choose_dict['content']=response
         return jsonify(choose_dict)
-    username="lnform"
-    return render_template('upload_Document.html',username=username)
+    username="admin"
+    return render_template('upload_Document.html',username=username,status='')
 
 @bp.route('/submit_doc',methods=["POST","GET"])
 def submit_doc():
@@ -264,8 +279,8 @@ def submit_doc():
             if answer['success']:
                 choose_dict['result']=1
             return jsonify(choose_dict)
-    username="lnform"
-    return render_template('upload_Document.html',username=username)
+    username='admin'
+    return render_template('upload_Document.html',username=username,status='')
 
 @bp.route('/submit_file_parsing',methods=["POST","GET"])
 def submit_file_parsing():
@@ -304,5 +319,5 @@ def submit_file_parsing():
             if answer['success']:
                 choose_dict['result']=1
             return jsonify(choose_dict)
-    username="lnform"
-    return render_template('upload_Document.html',username=username)
+    username="admin"
+    return render_template('upload_Document.html',username=username,status='')
