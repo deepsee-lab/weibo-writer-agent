@@ -30,7 +30,7 @@ cst_tz = pytz.timezone('Asia/Shanghai')
 # sqlite
 CUS_DB_PATH = os.path.join(ROOT_DIR, 'db.sqlite3')
 SQLALCHEMY_DATABASE_URI = 'sqlite:////{}'.format(CUS_DB_PATH)
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 # upload file format
 MAX_CONTENT_LENGTH = 160 * 1024 * 1024
 UPLOAD_FOLDER = ROOT_DIR+'/apps/weibo_UI/data/'

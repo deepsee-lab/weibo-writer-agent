@@ -74,9 +74,8 @@
                         </select>
                       </div>
                       <div class="col-sm-3">
-                        <select id="vector_select" name="vector_select" class="form-select" aria-label="Default select example">
-                          <option value="-1">--请选择向量数据库--</option>
-                          <option value="chroma">chroma</option>
+                        <select id="KB_select" name="vector_select" class="form-select" aria-label="Default select example">
+                          <option value="-1">--请选择知识库--</option>
                         </select>
                       </div>
                       <div  class="row mb-3">
@@ -140,7 +139,7 @@
           var type_name = document.getElementById("type_select").value; // 获取输入框中的值
           var model_name = document.getElementById("model_select").value; // 获取输入框中的值
           var png_file = document.getElementById("png_file").value; // 获取输入框中的值
-          var vector_select = document.getElementById("vector_select").value; // 获取输入框中的值
+          var KB_select = document.getElementById("KB_select").value; // 获取输入框中的值
           var title = document.getElementById("title").value; // 获取输入框中的值
           var thumb_media_id = document.getElementById("thumb_media_id").value; // 获取输入框中的值
           console.log('hello')
@@ -150,15 +149,15 @@
             alert('model_name 请选择!')
           } else if (png_file=="-1") {
             alert('png_file 请选择!')
-          } else if (vector_select=="-1") {
-            alert('vector_select 请选择!')
+          } else if (KB_select=="-1") {
+            alert('KB_select 请选择!')
           } else if (title=="") {
             alert('title 请填写!')
           } else {
             $.ajax({
                 url:"/weibo_UI/self_media",
                 type:"post",
-                data:JSON.stringify({'Type':'send_draft','type_name':type_name,'png_file':png_file,'model_name':model_name,'vector_select':vector_select,"title":title,"thumb_media_id":thumb_media_id}),
+                data:JSON.stringify({'Type':'send_draft','type_name':type_name,'png_file':png_file,'model_name':model_name,'KB_select':KB_select,"title":title,"thumb_media_id":thumb_media_id}),
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {
