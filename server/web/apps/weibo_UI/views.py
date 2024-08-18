@@ -383,12 +383,12 @@ def upload_img():
 @login_required  
 def post_img():
     username=session.get("name")
+    status=""
     if request.method == "POST":
         access_token='abc'
         if not os.path.exists(current_app.config['UPLOAD_FOLDER_PIC']):
             os.mkdir(current_app.config['UPLOAD_FOLDER_PIC'])
         files=os.listdir(current_app.config['UPLOAD_FOLDER_PIC'])
-        status=""
         choose_dict={}
         choose_dict['success_result']=0
         choose_dict['fail_result']=0
@@ -417,12 +417,12 @@ def post_img():
 @login_required  
 def post_material_img():
     username=session.get("name")
+    status=""
     if request.method == "POST":
         access_token='abc'
         if not os.path.exists(current_app.config['UPLOAD_FOLDER_PIC']):
             os.mkdir(current_app.config['UPLOAD_FOLDER_PIC'])
         files=os.listdir(current_app.config['UPLOAD_FOLDER_PIC'])
-        status=""
         choose_dict={}
         choose_dict['success_result']=0
         choose_dict['fail_result']=0
@@ -451,12 +451,12 @@ def post_material_img():
 @login_required  
 def material_video_add():
     username=session.get("name")
+    status=""
     if request.method == "POST":
         access_token='abc'
         if not os.path.exists(current_app.config['UPLOAD_FOLDER_VIDEO']):
             os.mkdir(current_app.config['UPLOAD_FOLDER_VIDEO'])
         files=os.listdir(current_app.config['UPLOAD_FOLDER_VIDEO'])
-        status=""
         choose_dict={}
         choose_dict['success_result']=0
         choose_dict['fail_result']=0
@@ -490,6 +490,7 @@ def material_video_add():
 @login_required  
 def upload_video():
     username=session.get("name")
+    status=""
     if request.method == "POST":
         f = request.files['file']
         filename=secure_filename(filename)
