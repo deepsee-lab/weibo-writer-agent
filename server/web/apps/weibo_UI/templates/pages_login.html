@@ -122,5 +122,31 @@
   <script src="/weibo_UI/static/js/jquery-3.6.0.min.js"></script>
   
 </body>
+<!-- Template Main JS File 
+<script type="text/javascript">
 
+  $(function () {
+      //页面框架加载完成后代码自动执行
+      bindBtn1Event();
+
+  })
+  function bindBtn1Event(){
+      $("#login_submit_info").click(function () {
+          
+          $.ajax({
+              url:"/weibo_UI/login",
+              type:"post",
+              data:JSON.stringify({}),
+              contentType: 'application/json; charset=UTF-8',
+              success: function(choose_dict) {
+                  content=choose_dict['result'];
+                  alert(content);
+              },
+          })
+        
+      })
+  }
+
+</script>
+-->
 </html>
