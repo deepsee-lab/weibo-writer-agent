@@ -1,3 +1,13 @@
+[program:creation]
+directory = creation
+command = python3 main.py
+startsecs = 5
+stopwaitsecs = 5
+autostart = true
+autorestart = true
+stdout_logfile = logs/supervisord/http-creation.log
+stderr_logfile = logs/supervisord/server-creation.log
+
 [program:cdn]
 directory = cdn
 command = python3 main.py
