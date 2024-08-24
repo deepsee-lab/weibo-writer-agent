@@ -8,6 +8,7 @@ from apps.vector_database.api import (
     get_embeddings,
     get_docx2text,
 )
+from apps.vector_database.vector_store.milvus_class import do_kb_query_mul
 
 router = APIRouter(
     prefix="/vector"
@@ -27,7 +28,7 @@ class KbAddItem(KbBaseItem):
 
 
 class KbIdsItem(BaseModel):
-    kb_ids: List[str] = Field(default=['0' * 32])
+    kb_ids: List[str] = Field(description='32-bit UUID without -', default=['uuid' + '0' * 28])
 
 
 class TextBlockItem(BaseModel):
@@ -92,28 +93,17 @@ def kb_add_one(item: KbAddItem):
     logger.info('run kb_add_one')
     logger.info(item)
     kb_id = item.kb_id
-    dim = item.dim
     milvus_class = MilvusClass(kb_id)
-    milvus_class.create_collection(dim=dim)
+    milvus_class.do_kb_add_one(**item.model_dump())
     return Response(success=True, code='000000', message='success', data={})
 
 
 @router.post("/kb_query_mul")
-def kb_query_one(item: KbIdsItem):
+def kb_query_mul(item: KbIdsItem):
     logger.info('run kb_query_one')
     logger.info(item)
-    kb_list = [
-        {
-            "kb_id": "kb_id",
-            "kb_name": "kb_name",
-            "kb_desc": "kb_desc",
-            "vector_store_name": "vector_store_name",
-            "embedding_model_name": "embedding_model_name",
-        }
-    ]
-    data = {
-        'kb_list': kb_list,
-    }
+    kb_ids = item.kb_ids
+    data = do_kb_query_mul(kb_ids)
     return Response(success=True, code='000000', message='success', data=data)
 
 
