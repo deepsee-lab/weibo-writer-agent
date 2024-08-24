@@ -1,4 +1,5 @@
 import os
+import gc
 import torch
 import soundfile as sf
 from diffusers import StableAudioPipeline
@@ -7,22 +8,37 @@ from dotenv import load_dotenv
 load_dotenv()
 
 model_name = "stabilityai/stable-audio-open-1.0"
-base_model_dir = os.getenv("BASE_MODEL_DIR")
+base_model_dir = os.getenv("BASE_LAM_MODEL_DIR")
 model_path = os.path.join(base_model_dir, model_name)
-curr_dir = os.path.dirname(os.path.abspath(__file__))
-output_file_dir = os.path.join(curr_dir, "files")
-if not os.path.exists(output_file_dir):
-    os.makedirs(output_file_dir, exist_ok=True)
 print('model_path: {}'.format(model_path))
 
-pipe = StableAudioPipeline.from_pretrained(model_path, torch_dtype=torch.float16)
-pipe = pipe.to("cuda")
 
-# set the seed for generator
-generator = torch.Generator("cuda").manual_seed(0)
+def get_output_dir():
+    output_file_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "files")
+    if not os.path.exists(output_file_dir):
+        os.makedirs(output_file_dir, exist_ok=True)
+    return output_file_dir
+
+
+def unload_model(pipe):
+    # Move model back to CPU
+    pipe.to('cpu')
+
+    # Delete model and other large objects
+    del pipe
+    gc.collect()
+
+    # If using CUDA, clear the CUDA cache
+    torch.cuda.empty_cache()
 
 
 def inf(prompt, negative_prompt, audio_end_in_s, filename):
+    pipe = StableAudioPipeline.from_pretrained(model_path, torch_dtype=torch.float16)
+    pipe = pipe.to("cuda")
+
+    # set the seed for generator
+    generator = torch.Generator("cuda").manual_seed(0)
+
     # run the generation
     audio = pipe(
         prompt,
@@ -35,9 +51,12 @@ def inf(prompt, negative_prompt, audio_end_in_s, filename):
 
     output = audio[0].T.float().cpu().numpy()
 
-    output_file = '{}/{}.wav'.format(output_file_dir, filename)
+    output_file = '{}/{}.wav'.format(get_output_dir(), filename)
 
     sf.write(output_file, output, pipe.vae.sampling_rate)
+
+    # 释放模型
+    unload_model(pipe)
 
     return output_file
 
