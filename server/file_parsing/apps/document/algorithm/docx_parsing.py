@@ -18,8 +18,8 @@ def docx_to_json(docx_path):
             'italic': para.runs[0].font.italic if para.runs else None,
             'underline': para.runs[0].font.underline if para.runs else None
         }
-        if para_data["text"].replace('\n', '').strip().replace(" ", "").replace("\t", "") == "" or para_data["text"] == None:
-            continue
+        if para_data["text"] is None or para_data["text"].replace('\n', '').strip().replace(" ", "").replace("\t", "") == "":
+              continue
         data.append(para_data)
         # print(para_data)
     # 将数据转换为JSON格式

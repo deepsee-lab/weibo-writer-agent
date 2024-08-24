@@ -46,16 +46,11 @@
                       <div class="col-sm-3">
                         <select id="type_select" name="type_name_select" class="form-select" aria-label="Default select example">
                           <option value="-1">--请选择模型框架--</option>
-                          <option value="1">ollama</option>
-                          <option value="2">xinference</option>
-                          <option value="3">API</option>
                         </select>
                       </div>
                       <div class="col-sm-3">
                         <select id="model_select" name="choose_select" class="form-select" aria-label="Default select example">
                           <option value="-1">--请选择模型名称--</option>
-                          <option value="1">qwen2:7b</option>
-                          <option value="2">chatglm3:6b</option>
                         </select>
                       </div>
                       
@@ -173,7 +168,60 @@
           }
 
       })
-      
+      $("#type_select").click(function () {
+          type_name='choose_type'
+          console.log('hello1')
+          count = $('#type_select').find('option').length
+          if (count<=1) {
+            $.ajax({
+                url:"/weibo_UI/choose_model_post",
+                type:"post",
+                data:JSON.stringify({'type_name':type_name}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                  file_list=choose_dict['content']
+                      $("#type_select").find("option").remove();
+                      count = $('#type_select').find('file_list').length
+                      console.log(count)
+                      $.each(file_list, function(index,item) {
+                        if (!count) {
+                          $("#type_select").append(  //此处向select中循环绑定数据
+                          "<option value="+item+">" + item+ "</option>");
+                        }
+                      });
+                },
+              
+            })
+          }
+
+      })
+      $("#model_select").click(function () {
+          type_name='choose_model'
+          var type_select = document.getElementById("type_select").value;
+          count = $('#model_select').find('option').length
+          if (count<=1) {
+            $.ajax({
+                url:"/weibo_UI/choose_model_post",
+                type:"post",
+                data:JSON.stringify({'type_name':type_name,'type_select':type_select}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                  file_list=choose_dict['content']
+                      $("#model_select").find("option").remove();
+                      count = $('#model_select').find('file_list').length
+                      console.log(count)
+                      $.each(file_list, function(index,item) {
+                        if (!count) {
+                          $("#model_select").append(  //此处向select中循环绑定数据
+                          "<option value="+item+">" + item+ "</option>");
+                        }
+                      });
+                },
+              
+            })
+          }
+
+      })
   }
 
 </script>
