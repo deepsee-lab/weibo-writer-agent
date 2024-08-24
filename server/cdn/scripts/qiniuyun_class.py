@@ -39,7 +39,8 @@ def run():
     # 要上传的空间
     bucket_name = 'wwa-test'
     # 要上传文件的本地路径
-    localfile = 'demo.txt'
+    # localfile = 'demo.txt'
+    localfile = 'demo.mp4'
     # 过期时间
     expire_time = 3600 * 4
 

@@ -15,11 +15,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-headers = {'Content-Type': 'application/json; charset=utf-8'}
-url = 'https://api.weixin.qq.com/cgi-bin/draft/add?access_token={}'.format(os.getenv('access_token'))
 
-
-def add_draft(TITLE, CONTENT, THUMB_MEDIA_ID):
+def add_draft(access_token, title, author, digest, content, content_source_url, thumb_media_id, need_open_comment,
+              only_fans_can_comment):
+    url = 'https://api.weixin.qq.com/cgi-bin/draft/add?access_token={}'.format(access_token)
     # 请求参数说明
     # 参数	是否必须	说明
     # title	是	标题
@@ -35,44 +34,62 @@ def add_draft(TITLE, CONTENT, THUMB_MEDIA_ID):
     json_data = {
         "articles": [
             {
-                "title": TITLE,
-                # "author": AUTHOR,
-                # "digest": DIGEST,
-                "content": CONTENT,
-                # "content_source_url": CONTENT_SOURCE_URL,
-                "thumb_media_id": THUMB_MEDIA_ID,
-                "need_open_comment": 1,
-                # "only_fans_can_comment": 0,
+                "title": title,
+                "author": author,
+                "digest": digest,
+                "content": content,
+                "content_source_url": content_source_url,
+                "thumb_media_id": thumb_media_id,
+                "need_open_comment": need_open_comment,
+                "only_fans_can_comment": only_fans_can_comment,
                 # "pic_crop_235_1": pic_crop_235_1,
                 # "pic_crop_1_1": pic_crop_1_1
             }
             # //若新增的是多图文素材，则此处应还有几段articles结构
         ]
     }
+    headers = {'Content-Type': 'application/json; charset=utf-8'}
     res = requests.post(url, data=json.dumps(json_data, ensure_ascii=False), headers=headers)
     result = res.json()
     return result
 
 
 def run():
-    TITLE = 'TITLE_{}'.format(str(datetime.datetime.now())[:19].replace(' ', '_').replace(':', '-'))
+    access_token = os.getenv('access_token')
 
-    logger.info('TITLE: {}'.format(TITLE))
+    title = 'title_{}'.format(str(datetime.datetime.now())[:19].replace(' ', '_').replace(':', '-'))
 
-    AUTHOR = 'lucky'
-    DIGEST = 'DIGEST'
+    logger.info('title: {}'.format(title))
+
+    author = 'author'
+    digest = 'digest'
     # file = 'files/article.html'
     # with open(file, 'r', encoding='utf-8') as f:
     #     CONTENT = f.read()
-    CONTENT = 'CONTENT is 正文'
-    print(CONTENT)
-    CONTENT_SOURCE_URL = 'CONTENT_SOURCE_URL'
-    THUMB_MEDIA_ID = os.getenv('THUMB_MEDIA_ID')
+    content = 'CONTENT is 正文'
+
+    logger.info('content: {}'.format(content))
+
+    content_source_url = None
+    thumb_media_id = os.getenv('THUMB_MEDIA_ID')
     pic_crop_235_1 = None
     pic_crop_1_1 = None
 
-    result = add_draft(TITLE, CONTENT, THUMB_MEDIA_ID)
-    print(result)
+    need_open_comment = 1
+    only_fans_can_comment = 0
+
+    result = add_draft(
+        access_token,
+        title,
+        author,
+        digest,
+        content,
+        content_source_url,
+        thumb_media_id,
+        need_open_comment,
+        only_fans_can_comment
+    )
+    logger.info('result: {}'.format(result))
 
 
 if __name__ == '__main__':

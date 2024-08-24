@@ -2,7 +2,7 @@ import requests
 
 
 def get_retrieve_inference(kb_id, query, top_k, output_fields):
-    url = 'http://127.0.0.1:7040/vector/search'
+    url = 'http://127.0.0.1:6020/vector/search'
     json_data = {
         "kb_id": kb_id,
         "query": query,
@@ -25,7 +25,6 @@ def get_llm_inference(inference_service, messages, model, max_tokens, stream, te
         "timeout": timeout,
     }
     res = requests.post(url, json=json_data)
-    print(res.json())
     return res.json()['data']['result']
 
 
