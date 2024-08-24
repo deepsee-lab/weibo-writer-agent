@@ -2,7 +2,7 @@ import uvicorn
 from loguru import logger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-# from apps.image.views import router as image_router
+from apps.image.views import router as image_router
 from apps.audio.views import router as audio_router
 from apps.video.views import router as video_router
 from configs import config
@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],  # 允许的请求头
 )
 
-# app.include_router(image_router)
+app.include_router(image_router)
 app.include_router(audio_router)
 app.include_router(video_router)
 
