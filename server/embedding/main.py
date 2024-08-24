@@ -32,7 +32,7 @@ app.add_middleware(
 
 
 class Item(BaseModel):
-    sentences: List[str] = Field(default=['文本1', '文本2'])
+    sentences: List[str] = Field(default=['文本1', 'text2'])
 
 
 class Response(BaseModel):

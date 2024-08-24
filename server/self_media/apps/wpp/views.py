@@ -1,5 +1,6 @@
 from loguru import logger
 from fastapi import APIRouter
+from typing import Optional
 from pydantic import BaseModel, Field
 from apps.wpp.scripts.get_stable_access_token import get_stable_access_token
 from apps.wpp.scripts.add_permanent_assets import (
@@ -7,18 +8,24 @@ from apps.wpp.scripts.add_permanent_assets import (
     add_material_img,
     add_material_video,
 )
+from apps.wpp.scripts.add_draft import add_draft
 from apps.wpp.scripts.free_publish import free_publish
 
 router = APIRouter(
     prefix="/wpp"
 )
-from apps.wpp.scripts.add_draft import add_draft
 
 
 class DraftAddItem(BaseModel):
+    access_token: str
     title: str = Field(default="title")
+    author: Optional[str] = Field(default=None)
+    digest: Optional[str] = Field(default=None)
     content: str = Field(default="content")
-    thumb_media_id: str = Field(default="xxxxxx_xxx-xxxx")
+    content_source_url: Optional[str] = Field(default=None)
+    thumb_media_id: str = Field(default="thumb_media_id")
+    need_open_comment: Optional[int] = Field(default=1)
+    only_fans_can_comment: Optional[int] = Field(default=0)
 
 
 class StableAccessTokenItem(BaseModel):
@@ -93,21 +100,11 @@ def material_video_add(item: VideoMaterialItem):
     return Response(success=True, code='000000', message='success', data=data)
 
 
-@router.post("/upload_img")
-def upload_img(item: MaterialItem):
-    logger.info('run upload_img')
-    access_token, file_path = item.access_token, item.file_path
-    data = uploadimg(access_token, file_path)
-    logger.info(data)
-    return Response(success=True, code='000000', message='success', data=data)
-
-
 @router.post("/draft_add")
 def draft_add(item: DraftAddItem):
     logger.info('run draft_add')
     logger.info(item)
-    title, content, thumb_media_id = item.title, item.content, item.thumb_media_id
-    res = add_draft(title, content, thumb_media_id)
+    res = add_draft(**item.model_dump())
     logger.info(res)
     if 'errcode' in res:
         return Response(success=False, code=str(res['errcode']), message=res['errmsg'], data=res)
