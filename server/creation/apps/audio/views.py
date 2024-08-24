@@ -37,7 +37,7 @@ def heartbeat():
     return 'heartbeat'
 
 
-@router.post("/generate")
+@router.post("/stable_audio_open_1_0/generate")
 def generate(item: GenerateItem):
     logger.info('run generate')
     logger.info('item: {}'.format(item))
