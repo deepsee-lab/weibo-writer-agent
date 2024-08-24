@@ -1,10 +1,30 @@
+import os
+import json
+from datetime import datetime
 from pymilvus import MilvusClient
 from apps.vector_database.api import get_embeddings
+
+data_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "milvus_data")
+if not os.path.exists(data_dir):
+    os.makedirs(data_dir, exist_ok=True)
 
 client = MilvusClient(
     uri="http://localhost:19530",
     token="root:Milvus"
 )
+
+
+def do_kb_query_mul(kb_ids):
+    result = {}
+    for kb_id in kb_ids:
+        kb_file = os.path.join(data_dir, "{}.json".format(kb_id))
+        d = {}
+        if os.path.exists(kb_file):
+            with open(os.path.join(data_dir, "{}.json".format(kb_id)), 'r', encoding='utf-8') as f:
+                d = json.load(f)
+                d.pop('kb_id', None)
+        result[kb_id] = d
+    return result
 
 
 class MilvusClass:
@@ -17,6 +37,25 @@ class MilvusClass:
                 collection_name=self.kb_id,
                 dimension=dim
             )
+
+    def do_kb_add_one(self, kb_id, kb_name, kb_desc, vector_store_name, embedding_model_name, dim):
+        if kb_id != self.kb_id:
+            raise Exception("kb_id not match")
+
+        self.create_collection(dim)
+
+        d = {
+            "kb_id": kb_id,
+            "kb_name": kb_name,
+            "kb_desc": kb_desc,
+            "vector_store_name": vector_store_name,
+            "embedding_model_name": embedding_model_name,
+            "dim": dim,
+            "create_time": str(datetime.now()),
+            "is_delete": 0,
+        }
+        with open(os.path.join(data_dir, "{}.json".format(self.kb_id)), 'w', encoding='utf-8') as f:
+            json.dump(d, f, ensure_ascii=False, indent=4)
 
     def insert_data(self, data):
         client.insert(collection_name=self.kb_id, data=data)
