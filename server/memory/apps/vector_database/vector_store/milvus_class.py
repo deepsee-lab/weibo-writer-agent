@@ -14,6 +14,19 @@ client = MilvusClient(
 )
 
 
+def do_kb_list_all():
+    l = []
+    for filename in os.listdir(data_dir):
+        if filename.endswith('.json'):
+            file = os.path.join(data_dir, filename)
+            if os.path.isfile(file):
+                with open(file, 'r', encoding='utf-8') as f:
+                    d = json.load(f)
+                    l.append(d)
+
+    return l
+
+
 def do_kb_query_mul(kb_ids):
     result = {}
     for kb_id in kb_ids:
