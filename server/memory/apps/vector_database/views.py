@@ -8,7 +8,10 @@ from apps.vector_database.api import (
     get_embeddings,
     get_docx2text,
 )
-from apps.vector_database.vector_store.milvus_class import do_kb_query_mul
+from apps.vector_database.vector_store.milvus_class import (
+    do_kb_list_all,
+    do_kb_query_mul,
+)
 
 router = APIRouter(
     prefix="/vector"
@@ -73,15 +76,7 @@ def heartbeat():
 @router.get("/kb_list_all")
 def kb_list_all():
     logger.info('run kb_list_all')
-    kb_list = [
-        {
-            "kb_id": "kb_id",
-            "kb_name": "kb_name",
-            "kb_desc": "kb_desc",
-            "vector_store_name": "vector_store_name",
-            "embedding_model_name": "embedding_model_name",
-        }
-    ]
+    kb_list = do_kb_list_all()
     data = {
         'kb_list': kb_list,
     }
