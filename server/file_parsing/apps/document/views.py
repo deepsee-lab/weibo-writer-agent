@@ -6,6 +6,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel, Field
 # Local application/library specific imports.
 from apps.document.algorithm import docx_parsing
+from apps.document.algorithm import file_split
 
 router = APIRouter(
     prefix="/document"
@@ -51,6 +52,23 @@ def docx_to_json(item: DocxItem):
 
 @router.post("/docx_to_text")
 def docx_to_text(item: DocxItem):
+    logger.info('item: {}'.format(item))
+    doc_id = item.doc_id
+    doc_name = item.doc_name
+    doc_path = item.doc_path
+    result = docx_parsing.docx_to_text(doc_path)
+    chunks=file_split.split_text(result)
+    logger.info('result: {}'.format(chunks))
+    data = {
+        'doc_id': doc_id,
+        'doc_name': doc_name,
+        'doc_path': doc_path,
+        'result': chunks,
+    }
+    return Response(success=True, code='000000', message='success', data=data)
+
+@router.post("/docx_to_sentence")
+def docx_to_sentence(item: DocxItem):
     logger.info('item: {}'.format(item))
     doc_id = item.doc_id
     doc_name = item.doc_name

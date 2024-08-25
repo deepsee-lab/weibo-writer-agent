@@ -5,12 +5,12 @@
 {% block content %}
 
     <div class="pagetitle">
-      <h1>Self media</h1>
+      <h1>Wei Xin</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/weibo_UI/index">Home</a></li>
           <li class="breadcrumb-item">AI</li>
-          <li class="breadcrumb-item active">self media</li>
+          <li class="breadcrumb-item active">text_to_picture_video</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -43,14 +43,21 @@
                   <h5 class="card-title">AI <span>| fighting</span></h5>
                   
                   <div class="col-sm-16">
-                    <label for="Media_id">MEDIA_ID:</label>
+                    <label for="Media_id">Text:</label>
                     <input type="text" id="Title" name="Media_id"  size="30" />
                   </div>
+                  <div>
                       <div class="col-sm-3">
-                        <button id="submit_pulish_free" type="submit" class="btn btn-primary">Submit</button>
+                        <button id="Generate_picture" type="submit" class="btn btn-primary">Generate_picture</button>
                       </div>
+                  </div>
+                  <label id="Status_Generate_picture">status: {{pic_status}}</label>
+                  <div>
+                    <div class="col-sm-3">
+                      <button id="Generate_video" type="submit" class="btn btn-primary">Generate_video</button>
                     </div>
-                    
+                  </div>
+                  <label id="Status_Generate_video">status: {{video_status}}</label>
                 </div>
                 
               </div>
@@ -75,15 +82,41 @@
       bindBtn1Event_Task();
   })
   function bindBtn1Event_Task(){
-    $("#submit_pulish_free").click(function () {
-        var Media_id = document.getElementById("Media_id").value; // 获取输入框中的值
-          if (Media_id=="") {
-            alert('Media_id 请填写!')
+    $("#Generate_picture").click(function () {
+        var Title = document.getElementById("Title").value; // 获取输入框中的值
+          if (Title=="") {
+            alert('Text 请填写!')
+          } else {
+            // 通过id选择label
+            var label = document.getElementById('Status_Generate_picture');
+             // 更新label的文本内容
+             label.innerText = 'status:请等待';
+            $.ajax({
+                url:"/weibo_UI/text_to_picture_video",
+                type:"post",
+                data:JSON.stringify({'type':"picture",'text':Title}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                    if (choose_dict['result']) {
+                        alert('成功添加');
+                    } else {
+                        alert('处理失败');
+                    }
+                },
+
+            })
+          }
+
+      })
+      $("#Generate_video").click(function () {
+        var Title = document.getElementById("Title").value; // 获取输入框中的值
+          if (Title=="") {
+            alert('Text 请填写!')
           } else {
             $.ajax({
-                url:"/weibo_UI/publish_free",
+                url:"/weibo_UI/text_to_picture_video",
                 type:"post",
-                data:JSON.stringify({'Media_id':Media_id}),
+                data:JSON.stringify({'type':"video",'text':Title}),
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {

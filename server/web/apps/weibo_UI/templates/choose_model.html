@@ -5,7 +5,7 @@
 {% block content %}
 
     <div class="pagetitle">
-      <h1>Choose project</h1>
+      <h1>AI RAG</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/home/">Home</a></li>
@@ -57,9 +57,11 @@
                       <div class="col-sm-3">
                         <select id="KB_id" name="KB_id" class="form-select" aria-label="Default select example">
                           <option value="-1">--请选择知识库的kb_id--</option>
+                          <option value="0">--不选知识库--</option>
                           <option value="uuid0000000000000000000000000111">uuid0000000000000000000000000111</option>
                           <option value="uuid0000000000000000000000000110">uuid0000000000000000000000000110</option>
                         </select>
+                        <label id="kb_name"></label>
                       </div>
                       <div  class="row mb-3">
                         <label class="col-sm-2 col-form-label">Top_K:</label>
@@ -85,10 +87,14 @@
                           </div>
                       <div class="col-sm-3">
                       </div>
-                          <label for="inputPassword" class="col-sm-2 col-form-label">answer</label>
-                          <div class="col-sm-10">
-                            <textarea class="form-control" style="height: 100px" id="answer"></textarea>
-                          </div>
+                      <label for="inputPassword" class="col-sm-2 col-form-label">answer</label>
+                      <div class="col-sm-10">
+                        <textarea class="form-control" style="height: 100px" id="answer"></textarea>
+                      </div>
+                      <label for="inputPassword" class="col-sm-2 col-form-label">answer</label>
+                      <div class="col-sm-10">
+                        <textarea class="form-control" style="height: 100px" id="answer"></textarea>
+                      </div>
                       <div class="col-sm-3">
                         <button id="submit_model_run" type="submit" class="btn btn-primary">Submit</button>
                       </div>

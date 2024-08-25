@@ -70,7 +70,6 @@ def logout():
     return render_template('pages_login.html')
 
 @bp.route('/add_user',methods=['GET','POST'] )
-@login_required  
 def add_user():
     if request.method == "POST":
         data = request.get_json()
@@ -552,3 +551,93 @@ def publish_free():
             choose_dict['result']=1
         return jsonify(choose_dict)
     return render_template('publish_free.html',username=username)
+######################################################################################
+# 知识库
+######################################################################################
+
+#################################################################
+############     1、 知识库问答
+#################################################################
+
+#################################################################
+############     2、 新建知识库
+#################################################################
+
+
+######################################################################################
+# 微信公众号
+######################################################################################
+
+#################################################################
+############     1、 上传素材
+#################################################################
+@bp.route('/text_to_picture_video',methods=["POST","GET"])
+@login_required  
+def text_to_picture_video():
+    username=session.get("name")
+    pic_status=''
+    video_status=''
+    if request.method == "POST":
+        data = request.get_json()
+        type_name=data['type']
+        text=data['text']
+        if 'picture' in type_name:
+            ####  post  ####
+            print('123')
+            url_self_media= 'https://83440n0z70.vicp.fun/image/FLUX_1_dev/generate'
+            json_data_picture = {
+                "prompt": text,
+                "filename": "demo",
+                "upload_to_cdn": True,
+                "bucket_name": "wwa-test",
+                "expire_time": 3600
+            }
+            # 发送请求并存储响应
+            response_self_media = requests.post(url_self_media, json=json_data_picture)
+            print('444',str(response_self_media))
+            self_media_res=response_self_media.json()
+            try:
+                url_link=self_media_res['data']['url']
+            except:
+                url_link='no find'
+            print('456')
+            pic_status='generate ok, check link:'+str(url_link)
+        elif 'video' in type_name:
+            ####  post  ####
+            url_self_media= 'https://83440n0z70.vicp.fun/video/CogVideoX_2b/generate'
+            json_data_picture = {
+                "prompt": text,
+                "filename": "demo",
+                "upload_to_cdn": True,
+                "bucket_name": "wwa-test",
+                "expire_time": 3600
+            }
+            # 发送请求并存储响应
+            response_self_media = requests.post(url_self_media, json=json_data_picture)
+            self_media_res=response_self_media.json()
+            try:
+                url_link=self_media_res['data']['url']
+            except:
+                url_link='no find'
+            video_status='generate ok, check link:'+str(url_link)
+    return render_template('text_to_picture_video.html',username=username,pic_status=pic_status,video_status=video_status)
+
+#################################################################
+############     2、 新建草稿
+#################################################################
+
+#################################################################
+############     3、 发布文章
+#################################################################
+
+######################################################################################
+# 智能微博
+######################################################################################
+
+#################################################################
+############     1、 微博草稿
+#################################################################
+
+#################################################################
+############     2、 新浪微博
+#################################################################
