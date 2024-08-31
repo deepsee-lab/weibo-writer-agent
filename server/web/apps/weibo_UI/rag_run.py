@@ -26,6 +26,33 @@ def vector_model_rag(url,KB_id,top_K,query,type_name,model_select):
     response = requests.post(url, json=json_data).json()
     return response
 
+def no_vector_model_rag(url,query,type_name,model_select):
+    #url = 'http://127.0.0.1:4010/private/inference'
+    json_data = {
+            "inference_service": type_name,
+            "messages": [
+              {
+                "role": "user",
+                "content": query
+              }
+            ],
+            "model": model_select,
+            "max_tokens": 4096,
+            "stream": False,
+            "temperature": 0.8,
+            "timeout": 60
+    }
+    # 发送请求并存储响应
+    response = requests.post(url, json=json_data).json()
+    return response
+
+def kb_list():
+    url='http://127.0.0.1:6020/vector/kb_list_all'
+    # 发送请求并存储响应
+    response = requests.get(url).json()
+    print('579',response)
+    return response
+
 if __name__ == '__main__':
     url = 'http://127.0.0.1:4010/private/inference'
     KB_id="uuid0000000000000000000000000111"

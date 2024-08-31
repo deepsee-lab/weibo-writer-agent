@@ -20,17 +20,30 @@
         <div class="col-lg-6">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Upload file</h5>
-              <form method="post" enctype="multipart/form-data" action="/weibo_UI/upload">
-                <div class="row mb-3">
-                    <label for="inputNumber" class="col-sm-8 col-form-label">File Upload</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" type="file" id="formFile" name="file" multiple="">
-                    </div>
-                    <input type="submit" value="上传" class="btn btn-primary">
-                    <label  class="col-sm-8 col-form-label">status: {{status}}</label>
-                </div>
-              </form>
+              <h5 class="card-title">Kb</h5>
+              <div class="col-sm-16">
+                <label for="Kb_name">Kb_name:</label>
+                <input type="text" id="Kb_name" name="Kb_name"  size="30" />
+              </div>
+              <label for="desc" class="col-sm-2 col-form-label">desc</label>
+              <div class="col-sm-20">
+                  <textarea class="form-control" style="height: 100px" id="desc"></textarea>
+              </div>
+              <div class="col-sm-13">
+                <select id="vector_store_name" name="vector_store_name" class="form-select" aria-label="Default select example">
+                  <option value="-1">--select_vector_store_name--</option>
+                  <option value="milvus">milvus</option>
+                </select>
+              </div>
+              <div class="col-sm-13">
+                <select id="embedding_model_name" name="choose_select" class="form-select" aria-label="Default select example">
+                  <option value="-1">--select_embedding_model_name--</option>
+                  <option value="bge-large-zh-v1.5">bge-large-zh-v1.5</option>
+                </select>
+              </div>
+              <div class="col-sm-3">
+                <button id="submit_kb" type="submit" class="btn btn-primary">Submit</button>
+              </div>
             </div>
           </div>
         </div>
@@ -38,10 +51,22 @@
           <div class="card">
             
             <div class="card-body">
-              <h5 class="card-title">Doc</h5>
-              <div class="col-sm-16">
-                <label for="Kb_id_doc">Kb_id:</label>
-                <input type="text" id="Kb_id_doc" name="Kb_id_doc"  size="30" />
+              <h5 class="card-title">Doc Upload</h5>
+              <form method="post" enctype="multipart/form-data" action="/weibo_UI/upload">
+                <div class="row mb-3">
+                    <label for="inputNumber" class="col-sm-8 col-form-label">File Upload</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" type="file" id="formFile" name="file" multiple="">
+                    </div>
+                    <input type="submit" value="上传" class="btn btn-primary">
+                    <label  class="col-sm-8 col-form-label">upload status: {{status}}</label>
+                </div>
+              </form>
+              <div class="col-sm-10">
+                <select id="KB_id" name="KB_id" class="form-select" aria-label="Default select example">
+                  <option value="0">--请选择知识库的kb_id--</option>
+                </select>
+                <label id="kb_name"></label>
               </div>
               <div class="col-sm-16">
                 <label for="Doc_id">Doc_id:</label>
@@ -69,77 +94,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Kb</h5>
-              <div class="col-sm-16">
-                <label for="Kb_id">Kb_id:</label>
-                <input type="text" id="Kb_id" name="Kb_id"  size="30" />
-              </div>
-              <div class="col-sm-16">
-                <label for="Kb_name">Kb_name:</label>
-                <input type="text" id="Kb_name" name="Kb_name"  size="30" />
-              </div>
-              <label for="desc" class="col-sm-2 col-form-label">desc</label>
-              <div class="col-sm-20">
-                  <textarea class="form-control" style="height: 100px" id="desc"></textarea>
-              </div>
-              <div class="col-sm-13">
-                <select id="vector_store_name" name="vector_store_name" class="form-select" aria-label="Default select example">
-                  <option value="-1">--select_vector_store_name--</option>
-                  <option value="milvus">milvus</option>
-                </select>
-              </div>
-              <div class="col-sm-13">
-                <select id="embedding_model_name" name="choose_select" class="form-select" aria-label="Default select example">
-                  <option value="-1">--select_embedding_model_name--</option>
-                  <option value="bge-large-zh-v1.5">bge-large-zh-v1.5</option>
-                </select>
-              </div>
-              <div class="col-sm-16">
-                <label for="Dim">Dim:</label>
-                <input type="text" id="Dim" name="Dim"  size="30" />
-              </div>
-              <div class="col-sm-3">
-                <button id="submit_kb" type="submit" class="btn btn-primary">Submit</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">File Parsing</h5>
-              <div class="col-sm-16">
-                <label for="doc_id_parsing">doc_id:</label>
-                <input type="text" id="doc_id_parsing" name="doc_id_parsing"  size="30" />
-              </div>
-              <div class="col-sm-16">
-                <label for="doc_name_parsing">doc_name:</label>
-                <input type="text" id="doc_name_parsing" name="doc_name_parsing"  size="30" />
-              </div>
-              <div class="col-sm-13">
-                <label for="doc_file_parsing">请选择doc文件，如没有，请选择上传:</label>
-                <select id="doc_file_parsing" name="doc_file_parsing" class="form-select" aria-label="Default select example">
-                  <option value="-1">--select_doc_file--</option>
-                </select>
-              </div>
-              <div class="col-sm-13">
-                <label for="doc_file_parsing_way">请选择file parsing方式:</label>
-                <select id="doc_file_parsing_way" name="doc_file_parsing_way" class="form-select" aria-label="Default select example">
-                  <option value="-1">--select_doc_file--</option>
-                  <option value="doc_to_json">--doc_to_json--</option>
-                  <option value="doc_to_text">--doc_to_text--</option>
-                </select>
-              </div>
-              <div class="col-sm-3">
-                <button id="submit_file_parsing" type="submit" class="btn btn-primary">Submit</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
+       
       </div>
     </section>
 
@@ -155,18 +110,14 @@
     })
     function bindBtn1Event_Task(){
       $("#submit_kb").click(function () {
-            var Kb_id = document.getElementById("Kb_id").value; // 获取输入框中的值
+            //var Kb_id = document.getElementById("Kb_id").value; // 获取输入框中的值
             var Kb_name = document.getElementById("Kb_name").value; // 获取输入框中的值
-            var Dim = document.getElementById("Dim").value; // 获取输入框中的值
+            //var Dim = document.getElementById("Dim").value; // 获取输入框中的值
             var vector_store_name = document.getElementById("vector_store_name").value; // 获取输入框中的值
             var embedding_model_name = document.getElementById("embedding_model_name").value; // 获取输入框中的值
             var desc = document.getElementById("desc").value; // 获取输入框中的值
-            if (Kb_id=="") {
-              alert('Kb_id 请填写!')
-            } else if (Kb_name=="") {
+            if (Kb_name=="") {
               alert('Kb_name 请填写!')
-            } else if (Dim=="") {
-              alert('Dim 请填写!')
             } else if (vector_store_name=="-1") {
               alert('vector_store_name 请选择!')
             } else if (embedding_model_name=="-1") {
@@ -177,7 +128,7 @@
               $.ajax({
                   url:"/weibo_UI/submit_kb",
                   type:"post",
-                  data:JSON.stringify({'Dim':Dim,'Kb_id':Kb_id,'Kb_name':Kb_name,'desc':desc,'vector_store_name':vector_store_name,'embedding_model_name':embedding_model_name}),
+                  data:JSON.stringify({'Kb_name':Kb_name,'desc':desc,'vector_store_name':vector_store_name,'embedding_model_name':embedding_model_name}),
                   contentType: 'application/json; charset=UTF-8',
                   success: function(choose_dict) {
                       if (choose_dict['result']) {
@@ -214,31 +165,10 @@
               })
             
         })
-        $("#doc_file_parsing").click(function () {
-              console.log('hello world')
-              $.ajax({
-                  url:"/weibo_UI/submit_file_parsing",
-                  type:"post",
-                  data:JSON.stringify({'Type':'selec_file'}),
-                  contentType: 'application/json; charset=UTF-8',
-                  success: function(file_dict) {
-                    file_list=file_dict['list']
-                      $("#doc_file_parsing").find("option").remove();
-                      count = $('#doc_file_parsing').find('file_list').length
-                      //console.log(count)
-                      $.each(file_list, function(index,item) {
-                        if (!count) {
-                          $("#doc_file_parsing").append(  //此处向select中循环绑定数据
-                          "<option value="+item+">" + item+ "</option>");
-                        }
-                      });
-                  },
-  
-              })
-            
-        })
+        
         $("#submit_doc").click(function () {
-            var Kb_id_doc = document.getElementById("Kb_id_doc").value; // 获取输入框中的值
+            var Kb_id_doc = document.getElementById("KB_id").value; // 获取输入框中的值
+            console.log(Kb_id_doc)
             var Doc_id = document.getElementById("Doc_id").value; // 获取输入框中的值
             var Doc_name = document.getElementById("Doc_name").value; // 获取输入框中的值
             var doc_file = document.getElementById("doc_file").value; // 获取输入框中的值
@@ -302,6 +232,35 @@
             }
   
         })
+        $("#KB_id").click(function () {
+          type_name='choose_KB'
+          count = $('#KB_id').find('option').length
+          console.log(count)
+          if (count<=1) {
+            $.ajax({
+                url:"/weibo_UI/choose_model_post",
+                type:"post",
+                data:JSON.stringify({'type_name':type_name}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                  file_list=choose_dict['content']
+                      $("#KB_id").find("option").remove();
+                      count = $('#KB_id').find('file_list').length
+                      console.log(count)
+                      $.each(file_list, function(index,item) {
+                        kb_name=item['kb_name'];
+                        kb_id=item['kb_id'];
+                        if (!count) {
+                          $("#KB_id").append(  //此处向select中循环绑定数据
+                          "<option value="+kb_id+">" + kb_name+ "</option>");
+                        }
+                      });
+                },
+              
+            })
+          }
+
+      })
     }
   
   </script>
