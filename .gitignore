@@ -1,3 +1,8 @@
+#
+server/.env
+server/web/apps/weibo_UI/data/
+server/web/apps/weibo_UI/pic_data/
+server/web/apps/weibo_UI/pvideo_data/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

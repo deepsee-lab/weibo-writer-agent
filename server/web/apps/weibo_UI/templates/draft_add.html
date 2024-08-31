@@ -46,13 +46,23 @@
                     <label for="Title">Title:</label>
                     <input type="text" id="Title" name="Title"  size="30" />
                   </div>
-                  <div class="col-sm-16">
-                    <label for="thumb_media_id">thumb_media_id:</label>
-                    <input type="text" id="thumb_media_id" name="thumb_media_id"  size="30" />
+                  <div class="col-sm-13">
+                    <label for="pic_file">请选择封面图片:</label>
+                    <select id="pic_file" name="pic_file" class="form-select" aria-label="Default select example">
+                      <option value="-1">--select_pic_file--</option>
+                    </select>
                   </div>
+                  <label for="digest" class="col-sm-2 col-form-label">摘要</label>
+                    <div class="col-sm-20">
+                        <textarea class="form-control" style="height: 100px" id="digest"></textarea>
+                    </div>
                   <label for="content" class="col-sm-2 col-form-label">content</label>
                     <div class="col-sm-20">
                         <textarea class="form-control" style="height: 100px" id="content"></textarea>
+                    </div>
+                    <div class="col-sm-16">
+                      <label for="content_source_url">阅读原文地址:</label>
+                      <input type="text" id="content_source_url" name="content_source_url"  size="30" />
                     </div>
                       <div class="col-sm-3">
                         <button id="submit_draft" type="submit" class="btn btn-primary">Submit</button>
@@ -86,18 +96,27 @@
     $("#submit_draft").click(function () {
         var Title = document.getElementById("Title").value; // 获取输入框中的值
         var thumb_media_id = document.getElementById("thumb_media_id").value; // 获取输入框中的值
+        var digest = document.getElementById("digest").value; // 获取输入框中的值
         var content = document.getElementById("content").value; // 获取输入框中的值
+        var content_source_url = document.getElementById("content_source_url").value; // 获取输入框中的值
+        console.log(thumb_media_id)
+        console.log(content)
+        console.log(Title)
           if (thumb_media_id=="") {
             alert('thumb_media_id 请填写!')
           } else if (Title=="") {
             alert('Title 请填写!')
         } else if (content=="") {
             alert('content 请填写!')
+          } else if (digest=="") {
+            alert('digest 请填写!')
+          } else if (content_source_url=="") {
+            alert('content_source_url 请填写!')
           } else {
             $.ajax({
                 url:"/weibo_UI/draft_add",
                 type:"post",
-                data:JSON.stringify({'thumb_media_id':thumb_media_id,'Title':Title,'content':content}),
+                data:JSON.stringify({'Type':'submit','thumb_media_id':thumb_media_id,'Title':Title,'content':content,'digest':digest,'content_source_url':content_source_url}),
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {
@@ -111,6 +130,32 @@
           }
 
       })
+      $("#pic_file").click(function () {
+        count = $('#pic_file').find('option').length
+          if (count<=1) {
+            $.ajax({
+                url:"/weibo_UI/draft_add",
+                type:"post",
+                data:JSON.stringify({'Type':'selec_pic'}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                  file_list=choose_dict['content']
+                      $("#pic_file").find("option").remove();
+                      count = $('#pic_file').find('option').length
+                      $.each(file_list, function(index,item) {
+                        pic=item['pic'];
+                        thumb_media_id=item['thumb_media_id'];
+                        console.log(pic)
+                        console.log(thumb_media_id)
+                        $("#pic_file").append(  //此处向select中循环绑定数据
+                        "<option value="+thumb_media_id+">" + pic+ "</option>");
+                        
+                      });
+                },
+              
+            })
+           }
+        })
   }
 
 </script>

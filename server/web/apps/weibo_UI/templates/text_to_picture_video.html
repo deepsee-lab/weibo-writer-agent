@@ -80,7 +80,7 @@
                         <button id="Generate_picture" type="submit" class="btn btn-primary">Generate_picture</button>
                       </div>
                   </div>
-                  <label id="Status_Generate_picture">status: {{pic_status}}</label>
+                  <label id="Status_Generate_picture">status: </label>
                   <div class="col-sm-13">
                     <label for="pic_file">请选择图片文件，如没有，请选择生成:</label>
                     <select id="pic_file" name="pic_file" class="form-select" aria-label="Default select example">
@@ -127,17 +127,13 @@
                       <button id="Generate_video" type="submit" class="btn btn-primary">Generate_video</button>
                     </div>
                   </div>
-                  <label id="Status_Generate_video">status: {{video_status}}</label>
+                  <label id="Status_Generate_video">status: </label>
                   <div class="col-sm-13">
                     <label for="video_file">请选择视频文件，如没有，请选择生成:</label>
                     <select id="video_file" name="video_file" class="form-select" aria-label="Default select example">
                       <option value="-1">--select_video_file--</option>
                     </select>
                   </div>
-                  <div class="col-sm-3">
-                    <button id="submit_video" type="submit" class="btn btn-primary">Submit</button>
-                  </div>
-                  <h5 class="card-title">Video_AI <span>| method 2</span></h5>
                   <div class="col-sm-16">
                     <label for="Video_Media_title">Title:</label>
                     <input type="text" id="Video_Media_title" name="Video_Media_title"  size="30" />
@@ -146,10 +142,11 @@
                   <div class="col-sm-10">
                     <textarea class="form-control" style="height: 100px" id="introduction"></textarea>
                   </div>
-                
                   <div class="col-sm-3">
-                    <button id="submit_okk" type="submit" class="btn btn-primary">Submit</button>
+                    <button id="submit_video" type="submit" class="btn btn-primary">Submit</button>
                   </div>
+                  
+                
                 </div>
                 
               </div>
@@ -189,7 +186,8 @@
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {
-                        alert('成功添加');
+                      var textarea = document.getElementById("Status_Generate_picture");
+                        textarea.innerHTML = choose_dict['content'];
                     } else {
                         alert('处理失败');
                     }
@@ -211,7 +209,8 @@
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {
-                        alert('成功添加');
+                      var textarea = document.getElementById("Status_Generate_video");
+                        textarea.innerHTML = choose_dict['content'];
                     } else {
                         alert('处理失败');
                     }
@@ -232,7 +231,7 @@
                   success: function(file_dict) {
                     file_list=file_dict['list']
                       $("#pic_file").find("option").remove();
-                      count = $('#pic_file').find('file_list').length
+                      count = $('#pic_file').find('option').length
                       //console.log(count)
                       $.each(file_list, function(index,item) {
                         if (!count) {
@@ -317,14 +316,20 @@
   
         })
         $("#submit_video").click(function () {
-            var video_file = document.getElementById("video_file").value; // 获取输入框中的值
+            var video_file = document.getElementById("video_file").value; // 获取输入框中的值 
+            var Video_Media_title = document.getElementById("Video_Media_title").value; // 获取输入框中的值
+            var introduction = document.getElementById("introduction").value; // 获取输入框中的值
             if (video_file=="") {
               alert('video_file 请选择!')
+            } else if (Video_Media_title=="") {
+              alert('Video_Media_title 请填写!')
+            } else if (introduction=="") {
+              alert('introduction 请填写!')
             } else {
               $.ajax({
                   url:"/weibo_UI/submit_video",
                   type:"post",
-                  data:JSON.stringify({'video_file':video_file,'Type':'submit_vedio'}),
+                  data:JSON.stringify({'video_file':video_file,'Type':'submit_vedio','introduction':introduction,'Video_Media_title':Video_Media_title}),
                   contentType: 'application/json; charset=UTF-8',
                   success: function(choose_dict) {
                       if (choose_dict['result']) {
@@ -343,7 +348,7 @@
               $.ajax({
                   url:"/weibo_UI/get_token",
                   type:"post",
-                  data:JSON.stringify({'type':'get_token'}),
+                  data:JSON.stringify({'Type':'get_token'}),
                   contentType: 'application/json; charset=UTF-8',
                   success: function(choose_dict) {
                       if (choose_dict['result']) {

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Standard library imports.
-import sqlite3,os,json,re,requests,uuid
+import sqlite3,os,json,re,requests,uuid,urllib.request,datetime
 # Related third party imports.
 from flask import Flask, Blueprint,render_template,request,jsonify,url_for,current_app,session,redirect,g
 from functools import wraps
@@ -11,7 +11,7 @@ from extends import (
 )
 # Local application/library specific imports.
 from apps.weibo_UI.rag_run import *
-from apps.weibo_UI.models import weibo_UI_Model
+from apps.weibo_UI.models import weibo_UI_Model,weibo_Pic_Model,weibo_Vedio_Model
 
 bp = Blueprint("weibo_UI", __name__, url_prefix='/weibo_UI',static_folder='static',template_folder='templates')
 
@@ -461,16 +461,13 @@ def submit_doc():
 @login_required  
 def text_to_picture_video():
     username=session.get("name")
-    pic_status=''
-    video_status=''
-    upload_status=''
     if request.method == "POST":
         data = request.get_json()
         type_name=data['type']
         text=data['text']
         if 'picture' in type_name:
             ####  post  ####
-            print('123')
+            logger.info('generate pic ing')
             url_self_media= 'https://83440n0z70.vicp.fun/image/FLUX_1_dev/generate'
             json_data_picture = {
                 "prompt": text,
@@ -481,13 +478,27 @@ def text_to_picture_video():
             }
             # 发送请求并存储响应
             response_self_media = requests.post(url_self_media, json=json_data_picture)
-            print('444',str(response_self_media))
+            logger.info(response_self_media.text)
             self_media_res=response_self_media.json()
-            try:
+            choose_dict={}
+            choose_dict['result']=0
+            pic_status=''
+            choose_dict['content']=pic_status
+            if self_media_res['success']:
                 url_link=self_media_res['data']['url']
-            except:
+                logger.info(url_link)
+                #url_link="http://sicmnykdc.hd-bkt.clouddn.com/png/257d42325be94c7fada905650e5d0fac.png"
+                tiem_str=str(datetime.datetime.today())
+                file_pic=text+'_'+tiem_str+'.png'
+                file_pic=file_pic.replace(' ','_').replace(':','').replace('.','').replace('-','')
+                file_path_pic=os.path.join(current_app.config['UPLOAD_FOLDER_PIC'], file_pic)
+                urllib.request.urlretrieve(url_link, file_path_pic)
+                choose_dict['result']=1
+            else:
                 url_link='no find'
             pic_status='generate ok, check link:'+str(url_link)
+            choose_dict['content']=pic_status
+            return jsonify(choose_dict)
         elif 'video' in type_name:
             ####  post  ####
             url_self_media= 'https://83440n0z70.vicp.fun/video/CogVideoX_2b/generate'
@@ -499,14 +510,27 @@ def text_to_picture_video():
                 "expire_time": 3600
             }
             # 发送请求并存储响应
+            logger.info('generate vedio ing')
             response_self_media = requests.post(url_self_media, json=json_data_picture)
             self_media_res=response_self_media.json()
-            try:
+            choose_dict={}
+            choose_dict['result']=0
+            choose_dict['content']=''
+            if self_media_res['success']:
                 url_link=self_media_res['data']['url']
-            except:
+                logger.info(url_link)
+                tiem_str=str(datetime.datetime.today())
+                file_video=text+'_'+tiem_str+'.mp4'
+                file_vedio=file_video.replace(' ','_').replace(':','').replace('.','').replace('-','')
+                file_path_video=os.path.join(current_app.config['UPLOAD_FOLDER_VIDEO'], file_vedio)
+                urllib.request.urlretrieve(url_link, file_path_video)
+                choose_dict['result']=1
+            else:
                 url_link='no find'
             video_status='generate ok, check link:'+str(url_link)
-    return render_template('text_to_picture_video.html',username=username,pic_status=pic_status,video_status=video_status,upload_status=upload_status)
+            choose_dict['content']=video_status
+            return jsonify(choose_dict)
+    return render_template('text_to_picture_video.html',username=username)
 
 @bp.route('/submit_pic',methods=["POST","GET"])
 @login_required  
@@ -563,6 +587,12 @@ def submit_pic():
             if self_media_res['success']:
                 choose_dict['content']='okk'
                 choose_dict['result']=1
+                new_picture = weibo_Pic_Model()
+                new_picture.name     = filename
+                new_picture.media_id = self_media_res['data']['media_id']
+                new_picture.url      = self_media_res['data']['url']
+                db.session.add(new_picture)
+                db.session.commit()
             return jsonify(choose_dict)
             
 @bp.route('/submit_video',methods=["POST","GET"])
@@ -578,50 +608,35 @@ def submit_video():
             return jsonify(file_dict)
         elif 'submit_vedio' in data['Type']:
             access_token=os.getenv('access_token')
-            filename=data['pic_file']
+            filename=data['video_file']
+            introduction=data['introduction']
+            Video_Media_title=data['Video_Media_title']
             pic_path=os.path.join(current_app.config['UPLOAD_FOLDER_VIDEO'], filename)
-            print(pic_path)
+            #print(pic_path)
             ####  post  ####
             url_self_media= 'http://127.0.0.1:6050/wpp/material_video_add'
             json_data_self_media = {
                 "access_token": access_token,
                 "file_path": pic_path,
-                "title": Title,
-                "introduction": Introduction
+                "title": Video_Media_title,
+                "introduction": introduction
             }
             # 发送请求并存储响应
             response_self_media = requests.post(url_self_media, json=json_data_self_media)
             self_media_res=response_self_media.json()
-            upload_status='upload qpic fail'
             choose_dict={}
             choose_dict['result']=0
-            choose_dict['content']=upload_status
             if self_media_res['success']:
-                choose_dict['content']=self_media_res['data']['url']
+                #choose_dict['media_id']=self_media_res['data']['media_id']
                 choose_dict['result']=1
-            return jsonify(choose_dict)
-        elif 'submit_pic' in data['Type']:
-            access_token=os.getenv('access_token')
-            filename=data['pic_file']
-            pic_path=os.path.join(current_app.config['UPLOAD_FOLDER_PIC'], filename)
-            print(pic_path)
-            ####  post  ####
-            url_self_media= 'http://127.0.0.1:6050/wpp/material_img_add'
-            json_data_self_media = {
-                "access_token": access_token,
-                "file_path": pic_path
-            }
-            # 发送请求并存储响应
-            response_self_media = requests.post(url_self_media, json=json_data_self_media)
-            self_media_res=response_self_media.json()
-            upload_status='upload qpic fail'
-            choose_dict={}
-            choose_dict['result']=0
-            choose_dict['content']=upload_status
-            if self_media_res['success']:
-                choose_dict['content']='okk'
-                choose_dict['result']=1
-            return jsonify(choose_dict)           
+                new_vedio = weibo_Vedio_Model()
+                new_vedio.name              = filename
+                new_vedio.media_id          = self_media_res['data']['media_id']
+                new_vedio.title             = Video_Media_title
+                new_vedio.introduction      = introduction
+                db.session.add(new_vedio)
+                db.session.commit()
+            return jsonify(choose_dict)         
 
 @bp.route('/get_token',methods=["POST","GET"])
 @login_required  
@@ -691,25 +706,50 @@ def get_token():
 def draft_add():
     username=session.get("name")
     if request.method == "POST":
-        choose_dict={}
-        choose_dict['result']=0
         data = request.get_json()
-        thumb_media_id=data['thumb_media_id']
-        Title=data['Title']
-        content=data['content']
-        ####  post  ####
-        url_self_media= 'http://127.0.0.1:6050/wpp/draft_add'
-        json_data_self_media = {
-            "title": Title,
-            "content": content,
-            "thumb_media_id": thumb_media_id
-        }
-        # 发送请求并存储响应
-        response_self_media = requests.post(url_self_media, json=json_data_self_media)
-        self_media_res=response_self_media.json()
-        if self_media_res['success']:
-            choose_dict['result']=1
-        return jsonify(choose_dict)
+        if 'submit' in data['Type']:
+            access_token=os.getenv('access_token')
+            Title=data['Title']
+            content=data['content']
+            thumb_media_id=data['thumb_media_id']
+            digest=data['digest']
+            content_source_url=data['content_source_url']
+            choose_dict={}
+            choose_dict['result']=0
+            ####  post  ####
+            url_self_media= 'http://127.0.0.1:6050/wpp/draft_add'
+            json_data_self_media = {
+                "access_token": access_token,
+                "title": Title,
+                "author": username,
+                "digest": digest,
+                "content": content,
+                "content_source_url": content_source_url,
+                "thumb_media_id": thumb_media_id,
+                "need_open_comment": 1,
+                "only_fans_can_comment": 0
+            }
+            # 发送请求并存储响应
+            logger.info('submit draft')
+            logger.info(Title)
+            logger.info(content)
+            logger.info(thumb_media_id)
+            response_self_media = requests.post(url_self_media, json=json_data_self_media)
+            self_media_res=response_self_media.json()
+            if self_media_res['success']:
+                choose_dict['result']=1
+            return jsonify(choose_dict)
+        elif 'selec_pic' in data['Type']:
+            item_list = weibo_Pic_Model.query.all()
+            Pic_lists = []
+            choose_dict={}
+            for item in item_list:
+                temp_dict={}
+                temp_dict['pic']=item.name
+                temp_dict['thumb_media_id']=item.media_id
+                Pic_lists.append(temp_dict)
+            choose_dict['content']=Pic_lists
+            return jsonify(choose_dict)
     return render_template('draft_add.html',username=username)
 
 #################################################################
@@ -792,7 +832,6 @@ def weibo_choose_model():
             choose_dict['content']=model_list
             return jsonify(choose_dict)
         elif "choose_KB" in type_name:
-            print('246')
             try:
                 res=kb_list()
                 kb_list_content=res['data']['kb_list']
@@ -817,13 +856,21 @@ def weibo_model_run():
         top_selector=data['top_selector']
         top_K=int(top_selector)
         query=data['query']
+        base_prompt = """
+        请根据案例```
+        {}
+        ```
+        编写一个80字左右的法律科普微博
+            """.strip()
+        prompt = base_prompt.format('\n\n'.join(query))
         logger.info(query)
+        logger.info(prompt)
         if KB_id=='0':
             url = 'http://127.0.0.1:4010/private/inference'
             # 检查响应状态代码
             rag_result=''
             retrieve_result=''
-            answer=no_vector_model_rag(url,query,type_name,model_select)
+            answer=no_vector_model_rag(url,prompt,type_name,model_select)
             if answer['message'] == 'success':
                 # 打印响应文本
                 rag_result=answer['data']['result']
@@ -833,7 +880,7 @@ def weibo_model_run():
             # 检查响应状态代码
             rag_result=''
             retrieve_result=''
-            answer=vector_model_rag(url,KB_id,top_K,query,type_name,model_select)
+            answer=vector_model_rag(url,KB_id,top_K,prompt,type_name,model_select)
             if answer['message'] == 'success':
                 # 打印响应文本
                 rag_result=answer['data']['rag_result']
