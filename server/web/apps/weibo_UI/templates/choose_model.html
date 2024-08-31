@@ -141,7 +141,7 @@ function updateValue1(slider){
           var top_selector = document.getElementById("top_selector").value; // 获取输入框中的值
           var query = document.getElementById("query").value; // 获取输入框中的值
           console.log('hello')
-          console.log(query)
+          console.log(KB_id)
           if (type_name=="-1") {
             alert('type_name 请选择!')
           } else if (model_name=="-1") {
@@ -251,10 +251,11 @@ function updateValue1(slider){
                       $.each(file_list, function(index,item) {
                         kb_name=item['kb_name'];
                         kb_id=item['kb_id'];
-                        if (!count) {
-                          $("#KB_id").append(  //此处向select中循环绑定数据
-                          "<option value="+kb_id+">" + kb_name+ "</option>");
-                        }
+                        console.log(kb_name)
+                        console.log(kb_id)
+                        $("#KB_id").append(  //此处向select中循环绑定数据
+                        "<option value="+kb_id+">" + kb_name+ "</option>");
+                        
                       });
                 },
               
