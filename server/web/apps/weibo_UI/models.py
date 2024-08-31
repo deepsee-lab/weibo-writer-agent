@@ -22,3 +22,28 @@ class weibo_UI_Model(db.Model):
         nullable=False,
         default=datetime.datetime.now(cst_tz)
     )
+
+class weibo_Pic_Model(db.Model):
+    __tablename__ = 'weibo_Pic'
+    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
+    url: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
+    media_id: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
+    create_time: Mapped[datetime.datetime] = mapped_column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.datetime.now(cst_tz)
+    )
+
+class weibo_Vedio_Model(db.Model):
+    __tablename__ = 'weibo_Vedio'
+    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
+    media_id: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
+    title: Mapped[str] = mapped_column(db.String, nullable=False, default=None)
+    introduction: Mapped[str] = mapped_column(db.String, nullable=False, default=None)
+    create_time: Mapped[datetime.datetime] = mapped_column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.datetime.now(cst_tz)
+    )
