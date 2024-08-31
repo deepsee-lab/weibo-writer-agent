@@ -1,7 +1,7 @@
-
 from docx import Document
 import os
 import json
+
 
 # 读取 docx 文件，并返回，json格式，方便后续处理，json要返回要有自号，字体，格式，大小等、
 def docx_to_json(docx_path):
@@ -18,12 +18,14 @@ def docx_to_json(docx_path):
             'italic': para.runs[0].font.italic if para.runs else None,
             'underline': para.runs[0].font.underline if para.runs else None
         }
-        if para_data["text"] is None or para_data["text"].replace('\n', '').strip().replace(" ", "").replace("\t", "") == "":
-              continue
+        if para_data["text"] is None or para_data["text"].replace('\n', '').strip().replace(" ", "").replace("\t",
+                                                                                                             "") == "":
+            continue
         data.append(para_data)
         # print(para_data)
     # 将数据转换为JSON格式
     return json.dumps(data, ensure_ascii=False, indent=4)
+
 
 # 读取docx文件，并返回纯文本，去除格式、换行符等
 def docx_to_text(filename):
@@ -32,6 +34,7 @@ def docx_to_text(filename):
     # 合并所有段落并去除多余的空格和换行符
     return ' '.join(text).replace('\n', '').strip().replace(" ", "").replace("\t", "")
     # return ' '.join(text).strip()
+
 
 # 遍历指定目录内docx文件，并输出json文件
 def all_docx_file_to_json(path):
@@ -50,9 +53,10 @@ def all_docx_file_to_json(path):
                         w.write(data)
                 except Exception as e:
                     with open("error.log", 'a', encoding='utf-8') as w:
-                        w.write('处理失败：'+ file_name+ ' 错误信息：'+ str(e))
+                        w.write('处理失败：' + file_name + ' 错误信息：' + str(e))
                     print('处理失败：', file_name, '错误信息：', str(e))
                 print('处理完成')
+
 
 # 测试
 # if __name__ == '__main__':
@@ -75,17 +79,19 @@ def all_docx_file_to_txt(path):
                         os.mkdir(os.path.join(root, 'txt'))
                         print('创建txt目录')
                     new_file_name = os.path.splitext(file)[0] + '.txt'
-                    new_file_name = os.path.join(root, "txt\\"+new_file_name)
+                    new_file_name = os.path.join(root, "txt\\" + new_file_name)
                     with open(new_file_name, 'w', encoding='utf-8') as w:
                         w.write(text)
                 except Exception as e:
                     with open("error.log", 'a', encoding='utf-8') as w:
-                        w.write('处理失败：'+ file_name+ '错误信息：'+ str(e))
+                        w.write('处理失败：' + file_name + '错误信息：' + str(e))
                     print('处理失败：', file_name, '错误信息：', str(e))
     print('处理完成')
+
+
 #
- # 测试
+# 测试
 if __name__ == '__main__':
-    path = r"中华人民共和国专利法_2020_10_17.docx"
-    aaaa=docx_to_text(path)
+    path = r"files/demo_2.docx"
+    aaaa = docx_to_text(path)
     print(aaaa)

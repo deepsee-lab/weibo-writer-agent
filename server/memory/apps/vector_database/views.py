@@ -7,6 +7,7 @@ from apps.vector_database.vector_store.milvus_class import MilvusClass, client
 from apps.vector_database.api import (
     get_embeddings,
     get_docx2text,
+    get_docx2chunks,
 )
 from apps.vector_database.vector_store.milvus_class import (
     do_kb_list_all,
@@ -145,11 +146,13 @@ def doc_add_one(item: DocAddItem):
     logger.info('run doc_add_one')
     logger.info(item)
     doc_path = item.doc_path
+    # chunks = get_docx2chunks(doc_path)
     text = get_docx2text(doc_path)
     sentences = str(text).split('。')
-    vectors = get_embeddings(sentences)
+    chunks = ['{}。'.format(x) for x in sentences]
+    vectors = get_embeddings(chunks)
     data = [
-        {"id": i, "vector": vectors[i], "text": sentences[i], "subject": "biology"}
+        {"id": i, "vector": vectors[i], "text": chunks[i], "subject": "biology"}
         for i in range(len(vectors))
     ]
     milvus_class.insert_data(data)
