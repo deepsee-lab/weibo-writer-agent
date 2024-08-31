@@ -15,7 +15,8 @@ def upload(bucket_name, localfile, expire_time):
 
 def run():
     bucket_name = 'wwa-test'
-    localfile = 'demo.txt'
+    # localfile = 'demo.txt'
+    localfile = 'demo.mp4'
     localfile = os.path.abspath(localfile)
     expire_time = 3600
     res = upload(bucket_name, localfile, expire_time)

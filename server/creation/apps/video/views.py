@@ -5,7 +5,8 @@ from loguru import logger
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 # Local application/library specific imports.
-from apps.video.algorithm.CogVideoX.CogVideoX_2b import inf
+from apps.video.algorithm.CogVideoX.CogVideoX_2b import inf as cog_videox_2b_Inf
+from apps.video.algorithm.CogVideoX.CogVideoX_5b import inf as cog_videox_5b_Inf
 from apis.cdn.upload import upload
 
 router = APIRouter(
@@ -38,10 +39,28 @@ def heartbeat():
 
 
 @router.post("/CogVideoX_2b/generate")
-def generate(item: GenerateItem):
+def cog_videox_2b_generate(item: GenerateItem):
     logger.info('run generate')
     logger.info('item: {}'.format(item))
-    output_file = inf(item.prompt, item.filename)
+    output_file = cog_videox_2b_Inf(item.prompt, item.filename)
+    if item.upload_to_cdn:
+        url = upload(item.bucket_name, output_file, item.expire_time)
+        data = {
+            'url': url
+        }
+    else:
+        data = {
+            'output_file': output_file
+        }
+    logger.info('data: {}'.format(data))
+    return Response(success=True, code='000000', message='success', data=data)
+
+
+@router.post("/CogVideoX_5b/generate")
+def cog_videox_5b_generate(item: GenerateItem):
+    logger.info('run generate')
+    logger.info('item: {}'.format(item))
+    output_file = cog_videox_5b_Inf(item.prompt, item.filename)
     if item.upload_to_cdn:
         url = upload(item.bucket_name, output_file, item.expire_time)
         data = {
