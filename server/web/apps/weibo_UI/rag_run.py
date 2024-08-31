@@ -3,6 +3,8 @@ from loguru import logger
 
 def vector_model_rag(url,KB_id,top_K,query,type_name,model_select):
     #url = 'http://127.0.0.1:4010/private/inference'
+    logger.info('vector_model_rag,kb--id:')
+    logger.info(KB_id)
     json_data = {
         "retrieve_only": False,
         "vector_search": True,
@@ -50,7 +52,7 @@ def kb_list():
     url='http://127.0.0.1:6020/vector/kb_list_all'
     # 发送请求并存储响应
     response = requests.get(url).json()
-    print('579',response)
+    logger.info(response)
     return response
 
 if __name__ == '__main__':

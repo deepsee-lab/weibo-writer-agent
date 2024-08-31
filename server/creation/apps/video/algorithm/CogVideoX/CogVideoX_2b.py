@@ -34,7 +34,6 @@ def inf(prompt, filename):
         device="cuda",
         dtype=torch.float16,
     )
-
     video = pipe(
         num_inference_steps=50,
         guidance_scale=6,
@@ -42,7 +41,7 @@ def inf(prompt, filename):
     ).frames[0]
 
     output_file = '{}/{}.mp4'.format(get_output_dir(), filename)
-
+    print('------------')
     export_to_video(video, output_file, fps=8)
 
     # 删除并尝试释放内存

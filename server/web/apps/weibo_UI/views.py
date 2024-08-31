@@ -298,11 +298,14 @@ def choose_model_post():
             try:
                 res=kb_list()
                 kb_list_content=res['data']['kb_list']
+                logger.info('kb_list')
+                
             except:
                 logger.info('no get kb list')
             choose_dict={}
             choose_dict['result']=1
             choose_dict['content']=kb_list_content
+            logger.info(kb_list_content)
             return jsonify(choose_dict)
 
 @bp.route('/model_run',methods=["POST"])
@@ -316,6 +319,7 @@ def model_run():
         top_selector=data['top_selector']
         top_K=int(top_selector)
         query=data['query']
+        logger.info(KB_id)
         logger.info(query)
         if KB_id=='0':
             url = 'http://127.0.0.1:4010/private/inference'
@@ -332,6 +336,8 @@ def model_run():
             # 检查响应状态代码
             rag_result=''
             retrieve_result=''
+            logger.info('rag_before:',KB_id)
+            logger.info(KB_id)
             answer=vector_model_rag(url,KB_id,top_K,query,type_name,model_select)
             if answer['message'] == 'success':
                 # 打印响应文本
@@ -369,7 +375,7 @@ def upload():
 def submit_kb():
     if request.method == "POST":
         unique_id=str(uuid.uuid4()).replace('-','')
-        print('lll',unique_id)
+        #print('lll',unique_id)
         # 02d2f68d6de441c38968c6b58b31dcfd
         data = request.get_json()
         Dim=1024
@@ -481,7 +487,6 @@ def text_to_picture_video():
                 url_link=self_media_res['data']['url']
             except:
                 url_link='no find'
-            print('456')
             pic_status='generate ok, check link:'+str(url_link)
         elif 'video' in type_name:
             ####  post  ####
@@ -518,6 +523,7 @@ def submit_pic():
             access_token=os.getenv('access_token')
             filename=data['pic_file']
             pic_path=os.path.join(current_app.config['UPLOAD_FOLDER_PIC'], filename)
+            logger.info(pic_path)
             ####  post  ####
             url_self_media= 'http://127.0.0.1:6050/wpp/upload_img'
             json_data_self_media = {
@@ -539,6 +545,8 @@ def submit_pic():
             access_token=os.getenv('access_token')
             filename=data['pic_file']
             pic_path=os.path.join(current_app.config['UPLOAD_FOLDER_PIC'], filename)
+            logger.info(pic_path)
+            logger.info(access_token)
             ####  post  ####
             url_self_media= 'http://127.0.0.1:6050/wpp/material_img_add'
             json_data_self_media = {
