@@ -84,8 +84,8 @@ def all_docx_file_to_txt(path):
                     print('处理失败：', file_name, '错误信息：', str(e))
     print('处理完成')
 #
-# # 测试
-# if __name__ == '__main__':
-#     path = r"法律条文"
-#
-#     all_docx_file_to_txt(path)
+ # 测试
+if __name__ == '__main__':
+    path = r"中华人民共和国专利法_2020_10_17.docx"
+    aaaa=docx_to_text(path)
+    print(aaaa)

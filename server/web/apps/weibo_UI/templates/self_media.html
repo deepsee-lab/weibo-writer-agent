@@ -5,12 +5,12 @@
 {% block content %}
 
     <div class="pagetitle">
-      <h1>Self media</h1>
+      <h1>Draft publish</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/home/">Home</a></li>
+          <li class="breadcrumb-item"><a href="/weibo_UI/index">Home</a></li>
           <li class="breadcrumb-item">AI</li>
-          <li class="breadcrumb-item active">self media</li>
+          <li class="breadcrumb-item active">Draft publish</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -33,78 +33,22 @@
                       <h6>Filter</h6>
                     </li>
 
-                    <li><a class="dropdown-item" href="#">Week</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
+                    <li><a class="dropdown-item" href="#">1</a></li>
+                    <li><a class="dropdown-item" href="#">2</a></li>
+                    <li><a class="dropdown-item" href="#">3</a></li>
                   </ul>
                 </div>
                 
                 <div class="card-body">
                   <h5 class="card-title">AI <span>| fighting</span></h5>
-                    
-                    
+                  
+                  <div class="col-sm-16">
+                    <label for="MEDIA_ID">MEDIA_ID:</label>
+                    <input type="text" id="MEDIA_ID" name="MEDIA_ID"  size="30" />
+                  </div>
                       <div class="col-sm-3">
-                        <select id="type_select" name="type_name_select" class="form-select" aria-label="Default select example">
-                          <option value="-1">--请选择模型框架--</option>
-                          <option value="ollama">ollama</option>
-                          <option value="xinference">xinference</option>
-                          <option value="API">API</option>
-                        </select>
+                        <button id="submit_draft" type="submit" class="btn btn-primary">Submit</button>
                       </div>
-                      <div class="col-sm-3">
-                        <select id="model_select" name="choose_select" class="form-select" aria-label="Default select example">
-                          <option value="-1">--请选择模型名称--</option>
-                          <option value="qwen2:7b">qwen2:7b</option>
-                          <option value="chatglm3:6b">chatglm3:6b</option>
-                        </select>
-                      </div>
-                      <form method="post" enctype="multipart/form-data" action="/weibo_UI/Pic_upload">
-                        <div class="row mb-3">
-                            <label for="Png" class="col-sm-8 col-form-label">Picture Upload</label>
-                            <div class="col-sm-10">
-                              <input class="form-control" type="file" id="Png" name="Png" multiple="">
-                            </div>
-                            <input type="submit" value="上传" class="btn btn-primary">
-                        </div>
-                      </form>
-                      <div class="col-sm-13">
-                        <label for="png_file">请选择封面图片，如没有，请选择上传:</label>
-                        <select id="png_file" name="png_file" class="form-select" aria-label="Default select example">
-                          <option value="-1">--select_png_file--</option>
-                        </select>
-                      </div>
-                      <div class="col-sm-3">
-                        <select id="KB_select" name="vector_select" class="form-select" aria-label="Default select example">
-                          <option value="-1">--请选择知识库--</option>
-                        </select>
-                      </div>
-                      <div  class="row mb-3">
-                        <label class="col-sm-2 col-form-label">Temperature:</label>
-                        <div class="col-sm-3">
-                          <input type="range" id="number-selector" name="number-selector" min="0" max="100" step="1" value="50" oninput="updateValue(this)">
-                        </div>
-                        <div class="col-sm-3">
-                          <span id="value-display">50</span>
-                        </div>
-                      </div>
-                          <label for="inputPassword" class="col-sm-2 col-form-label">title</label>
-                          <div class="col-sm-10">
-                            <textarea class="form-control" style="height: 100px" id="title"></textarea>
-                          </div>
-                      <div class="col-sm-3">
-                        <label for="inputPassword" class="col-sm-2 col-form-label">thumb_media_id</label>
-                          <div class="col-sm-10">
-                            <textarea class="form-control" style="height: 100px" id="thumb_media_id"></textarea>
-                          </div>
-                      </div>
-                          <label for="inputPassword" class="col-sm-2 col-form-label">answer</label>
-                          <div class="col-sm-10">
-                            <textarea class="form-control" style="height: 100px" id="answer"></textarea>
-                          </div>
-                      <div class="col-sm-3">
-                        <button id="submit_model_run" type="submit" class="btn btn-primary">Submit</button>
-                      </div>
-                    </div>
                     
                 </div>
                 
@@ -128,45 +72,21 @@
   $(function () {
       //页面框架加载完成后代码自动执行
       bindBtn1Event_Task();
-      updateValue(slider);
   })
-  function updateValue(slider){
-    var display = document.getElementById("value-display");
-    display.innerHTML = slider.value;
-  }
   function bindBtn1Event_Task(){
-    $("#submit_model_run").click(function () {
-          var type_name = document.getElementById("type_select").value; // 获取输入框中的值
-          var model_name = document.getElementById("model_select").value; // 获取输入框中的值
-          var png_file = document.getElementById("png_file").value; // 获取输入框中的值
-          var KB_select = document.getElementById("KB_select").value; // 获取输入框中的值
-          var title = document.getElementById("title").value; // 获取输入框中的值
-          var thumb_media_id = document.getElementById("thumb_media_id").value; // 获取输入框中的值
-          console.log('hello')
-          if (type_name=="-1") {
-            alert('type_name 请选择!')
-          } else if (model_name=="-1") {
-            alert('model_name 请选择!')
-          } else if (png_file=="-1") {
-            alert('png_file 请选择!')
-          } else if (KB_select=="-1") {
-            alert('KB_select 请选择!')
-          } else if (title=="") {
-            alert('title 请填写!')
+    $("#submit_draft").click(function () {
+        var MEDIA_ID = document.getElementById("MEDIA_ID").value; // 获取输入框中的值
+          if (MEDIA_ID=="") {
+            alert('MEDIA_ID 请填写!')
           } else {
             $.ajax({
                 url:"/weibo_UI/self_media",
                 type:"post",
-                data:JSON.stringify({'Type':'send_draft','type_name':type_name,'png_file':png_file,'model_name':model_name,'KB_select':KB_select,"title":title,"thumb_media_id":thumb_media_id}),
+                data:JSON.stringify({'MEDIA_ID':MEDIA_ID,'Type':'publish'}),
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {
-                      // 获取<textarea>元素的引用
-                      var textarea = document.getElementById("answer");
-                                            
-                      // 设置<textarea>元素的内容
-                      textarea.innerHTML = choose_dict['content'];
-
+                        alert('成功发布');
                     } else {
                         alert('处理失败');
                     }
@@ -176,31 +96,6 @@
           }
 
       })
-      ("#png_file").click(function () {
-              console.log('hello world')
-              $.ajax({
-                  url:"/weibo_UI/self_media",
-                  type:"post",
-                  data:JSON.stringify({'Type':'selec_picture'}),
-                  contentType: 'application/json; charset=UTF-8',
-                  success: function(file_dict) {
-                    file_list=file_dict['list']
-                      $("#png_file").find("option").remove();
-                      count = $('#png_file').find('file_list').length
-                      //console.log(count)
-                      $.each(file_list, function(index,item) {
-                        if (!count) {
-                          $("#png_file").append(  //此处向select中循环绑定数据
-                          "<option value="+item+">" + item+ "</option>");
-                        }
-                      });
-                  },
-  
-              })
-            
-  
-        })
-      
   }
 
 </script>

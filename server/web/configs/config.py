@@ -36,6 +36,7 @@ MAX_CONTENT_LENGTH = 160 * 1024 * 1024
 UPLOAD_FOLDER = ROOT_DIR+'/apps/weibo_UI/data/'
 UPLOAD_FOLDER_PIC = ROOT_DIR+'/apps/weibo_UI/pic_data/'
 UPLOAD_FOLDER_VIDEO = ROOT_DIR+'/apps/weibo_UI/video_data/'
+VAR_FILE_PATH = ROOT_DIR+'/../.env'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 #
 SECRET_KEY= "renyizifuchuan"

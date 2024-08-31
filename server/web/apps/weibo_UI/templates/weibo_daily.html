@@ -5,11 +5,11 @@
 {% block content %}
 
     <div class="pagetitle">
-      <h1>AI RAG</h1>
+      <h1>Weibo RAG</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="/home/">Home</a></li>
-          <li class="breadcrumb-item">AI</li>
+          <li class="breadcrumb-item">weibo</li>
           <li class="breadcrumb-item active">choose model</li>
         </ol>
       </nav>
@@ -115,7 +115,7 @@
 {% block js %}
 <script src="/weibo_UI/static/js/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
-function updateValue1(slider){
+  function updateValue1(slider){
     var display = document.getElementById("value1-display");
     display.innerHTML = slider.value;
   }
@@ -132,6 +132,7 @@ function updateValue1(slider){
       //页面框架加载完成后代码自动执行
       bindBtn1Event_Task();
   })
+  
   
   function bindBtn1Event_Task(){
     $("#submit_model_run").click(function () {
@@ -154,7 +155,7 @@ function updateValue1(slider){
             alert('query 请填写!')
           } else {
             $.ajax({
-                url:"/weibo_UI/model_run",
+                url:"/weibo_UI/weibo_model_run",
                 type:"post",
                 data:JSON.stringify({'type_name':type_name,'model_name':model_name,'KB_id':KB_id,'top_selector':top_selector,"query":query}),
                 contentType: 'application/json; charset=UTF-8',
@@ -185,7 +186,7 @@ function updateValue1(slider){
           count = $('#type_select').find('option').length
           if (count<=1) {
             $.ajax({
-                url:"/weibo_UI/choose_model_post",
+                url:"/weibo_UI/weibo_choose_model",
                 type:"post",
                 data:JSON.stringify({'type_name':type_name}),
                 contentType: 'application/json; charset=UTF-8',
@@ -212,7 +213,7 @@ function updateValue1(slider){
           count = $('#model_select').find('option').length
           if (count<=1) {
             $.ajax({
-                url:"/weibo_UI/choose_model_post",
+                url:"/weibo_UI/weibo_choose_model",
                 type:"post",
                 data:JSON.stringify({'type_name':type_name,'type_select':type_select}),
                 contentType: 'application/json; charset=UTF-8',
@@ -239,7 +240,7 @@ function updateValue1(slider){
           console.log(count)
           if (count<=1) {
             $.ajax({
-                url:"/weibo_UI/choose_model_post",
+                url:"/weibo_UI/weibo_choose_model",
                 type:"post",
                 data:JSON.stringify({'type_name':type_name}),
                 contentType: 'application/json; charset=UTF-8',
