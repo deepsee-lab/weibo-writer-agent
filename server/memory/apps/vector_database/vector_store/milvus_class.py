@@ -42,6 +42,8 @@ def do_kb_query_mul(kb_ids):
 
 class MilvusClass:
     def __init__(self, kb_id: str):
+        if not str(kb_id).startswith('kb_id_'):
+            kb_id = 'kb_id_{}'.format(kb_id)
         self.kb_id = kb_id
 
     def create_collection(self, dim: int):
@@ -52,13 +54,13 @@ class MilvusClass:
             )
 
     def do_kb_add_one(self, kb_id, kb_name, kb_desc, vector_store_name, embedding_model_name, dim):
-        if kb_id != self.kb_id:
-            raise Exception("kb_id not match")
+        # if kb_id != self.kb_id:
+        #     raise Exception("kb_id not match")
 
         self.create_collection(dim)
 
         d = {
-            "kb_id": kb_id,
+            "kb_id": self.kb_id,
             "kb_name": kb_name,
             "kb_desc": kb_desc,
             "vector_store_name": vector_store_name,

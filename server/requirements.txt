@@ -15,3 +15,5 @@ requests==2.32.3
 sentence-transformers==3.0.1
 supervisor==4.2.5
 uvicorn==0.30.4
+jieba==0.42.1
+nltk==3.9.1
