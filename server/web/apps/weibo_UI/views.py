@@ -11,7 +11,7 @@ from extends import (
 )
 # Local application/library specific imports.
 from apps.weibo_UI.rag_run import *
-from apps.weibo_UI.models import weibo_UI_Model,weibo_Pic_Model,weibo_Vedio_Model,weibo_wpp_draft_Model,weibo_file_change_Model
+from apps.weibo_UI.models import weibo_UI_Model,weibo_Pic_Model,weibo_Vedio_Model,weibo_wpp_add_draft_Model,weibo_file_change_Model
 
 bp = Blueprint("weibo_UI", __name__, url_prefix='/weibo_UI',static_folder='static',template_folder='templates')
 
@@ -141,81 +141,6 @@ def submit_file_parsing():
     username=session.get("name")
     return render_template('upload_Document.html',username=username,status='')
 
-######################################################################################
-#self_media
-######################################################################################
-
-
-@bp.route('/upload_img',methods=["POST","GET"])
-@login_required  
-def upload_img():
-    username=session.get("name")
-    if request.method == "POST":
-        f = request.files['file']
-        filename=secure_filename(filename)
-        save_path=os.path.join(current_app.config['UPLOAD_FOLDER_PIC'], filename)
-        if not os.path.exists(current_app.config['UPLOAD_FOLDER_PIC']):
-            os.mkdir(current_app.config['UPLOAD_FOLDER_PIC'])
-        f.save(save_path)
-        status="upload ok"
-        return render_template('upload_img.html',username=username,status=status)
-    return render_template('upload_img.html',username=username,status=status)
-
-
-@bp.route('/material_video_add',methods=["POST","GET"])
-@login_required  
-def material_video_add():
-    username=session.get("name")
-    status=""
-    if request.method == "POST":
-        access_token='abc'
-        if not os.path.exists(current_app.config['UPLOAD_FOLDER_VIDEO']):
-            os.mkdir(current_app.config['UPLOAD_FOLDER_VIDEO'])
-        files=os.listdir(current_app.config['UPLOAD_FOLDER_VIDEO'])
-        choose_dict={}
-        choose_dict['success_result']=0
-        choose_dict['fail_result']=0
-        choose_dict['result']=0
-        data = request.get_json()
-        Introduction=data['Introduction']
-        Title=data['Title']
-        for file in files:
-            pic_path=os.path.join(current_app.config['UPLOAD_FOLDER_VIDEO'],file)
-            ####  post  ####
-            url_self_media= 'http://127.0.0.1:6050/wpp/material_video_add'
-            json_data_self_media = {
-                "access_token": access_token,
-                "file_path": pic_path,
-                "title": Title,
-                "introduction": Introduction
-            }
-            # 发送请求并存储响应
-            response_self_media = requests.post(url_self_media, json=json_data_self_media)
-            self_media_res=response_self_media.json()
-            if self_media_res['success']:
-                choose_dict['success_result']+=1
-                choose_dict['result']=1
-            else:
-                choose_dict['fail_result']+=1
-        choose_dict['content']='成功了'+str(choose_dict['success_result'])+'个, '+'失败了'+str(choose_dict['fail_result'])+'个'
-        return jsonify(choose_dict)
-    return render_template('upload_video.html',username=username,status=status)
-
-@bp.route('/upload_video',methods=["POST","GET"])
-@login_required  
-def upload_video():
-    username=session.get("name")
-    status=""
-    if request.method == "POST":
-        f = request.files['file']
-        filename=secure_filename(filename)
-        save_path=os.path.join(current_app.config['UPLOAD_FOLDER_VIDEO'], filename)
-        if not os.path.exists(current_app.config['UPLOAD_FOLDER_VIDEO']):
-            os.mkdir(current_app.config['UPLOAD_FOLDER_VIDEO'])
-        f.save(save_path)
-        status="upload ok"
-        return render_template('upload_video.html',username=username,status=status)
-    return render_template('upload_video.html',username=username,status=status)
 
 ######################################################################################
 # 知识库
@@ -360,6 +285,7 @@ def submit_kb():
         unique_id=str(uuid.uuid4()).replace('-','')
         #print('lll',unique_id)
         # 02d2f68d6de441c38968c6b58b31dcfd
+        unique_id='kb'+unique_id[2:]
         data = request.get_json()
         Dim=1024
         Kb_id=unique_id
@@ -481,7 +407,7 @@ def text_to_picture_video():
                 #url_link="http://sicmnykdc.hd-bkt.clouddn.com/png/257d42325be94c7fada905650e5d0fac.png"
                 tiem_str=str(datetime.datetime.today())
                 file_pic=text+'_'+tiem_str+'.png'
-                file_pic=file_pic.replace(' ','_').replace(':','').replace('.','').replace('-','')
+                file_pic=file_pic.replace(' ','_').replace(':','').replace('-','')
                 file_path_pic=os.path.join(current_app.config['UPLOAD_FOLDER_PIC'], file_pic)
                 urllib.request.urlretrieve(url_link, file_path_pic)
                 choose_dict['result']=1
@@ -512,7 +438,7 @@ def text_to_picture_video():
                 logger.info(url_link)
                 tiem_str=str(datetime.datetime.today())
                 file_video=text+'_'+tiem_str+'.mp4'
-                file_vedio=file_video.replace(' ','_').replace(':','').replace('.','').replace('-','')
+                file_vedio=file_video.replace(' ','_').replace(':','').replace('-','')
                 file_path_video=os.path.join(current_app.config['UPLOAD_FOLDER_VIDEO'], file_vedio)
                 urllib.request.urlretrieve(url_link, file_path_video)
                 choose_dict['result']=1
@@ -729,13 +655,13 @@ def draft_add():
             self_media_res=response_self_media.json()
             if self_media_res['success']:
                 choose_dict['result']=1
-                new_wpp_draft = weibo_wpp_draft_Model()
-                new_wpp_draft.title               = Title
-                new_wpp_draft.author              = username
+                new_wpp_draft = weibo_wpp_add_draft_Model()
+                new_wpp_draft.title               = re.sub('[^\u4e00-\u9fa5]+','',Title) #去除不可见字符
+                new_wpp_draft.user                = username
                 new_wpp_draft.thumb_media_id      = thumb_media_id
                 new_wpp_draft.media_id            = self_media_res['data']['media_id']
-                new_wpp_draft.digest              = digest
-                new_wpp_draft.content             = content
+                new_wpp_draft.digest              = re.sub('[^\u4e00-\u9fa5]+','',digest) #去除不可见字符
+                new_wpp_draft.content             = re.sub('[^\u4e00-\u9fa5]+','',content) #去除不可见字符
                 new_wpp_draft.content_source_url  = content_source_url
                 db.session.add(new_wpp_draft)
                 db.session.commit()
@@ -817,13 +743,13 @@ def self_media():
                 #choose_dict['content']=response
                 return jsonify(choose_dict)
         elif 'selec_media_id' in data['Type']:
-            item_list = weibo_wpp_draft_Model.query.all()
+            item_list = weibo_wpp_add_draft_Model.query.all()
             Wpp_lists = []
             choose_dict={}
             for item in item_list:
                 temp_dict={}
                 temp_dict['title']               = item.title               
-                temp_dict['author']              = item.author              
+                temp_dict['author']              = item.user              
                 temp_dict['thumb_media_id']      = item.thumb_media_id      
                 temp_dict['media_id']            = item.media_id            
                 temp_dict['digest']              = item.digest              
