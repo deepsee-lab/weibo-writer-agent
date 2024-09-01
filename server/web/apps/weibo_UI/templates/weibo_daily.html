@@ -160,7 +160,7 @@
             $.ajax({
                 url:"/weibo_UI/weibo_model_run",
                 type:"post",
-                data:JSON.stringify({'type_name':type_name,'model_name':model_name,'KB_id':KB_id,'top_selector':top_selector,"query":query}),
+                data:JSON.stringify({'Type':'run','type_name':type_name,'model_name':model_name,'KB_id':KB_id,'top_selector':top_selector,"query":query}),
                 contentType: 'application/json; charset=UTF-8',
                 success: function(choose_dict) {
                     if (choose_dict['result']) {
@@ -262,6 +262,28 @@
                       });
                 },
               
+            })
+          }
+
+      })
+      $("#copy_run").click(function () {
+          var answer = document.getElementById("answer").value; // 获取输入框中的值
+          if (answer=="") {
+            alert('请先去生成回答!')
+          } else {
+            $.ajax({
+                url:"/weibo_UI/weibo_model_run",
+                type:"post",
+                data:JSON.stringify({'Type':'copy','answer':answer}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                    if (choose_dict['result']) {
+                        alert('复制成功');
+                    } else {
+                        alert('处理失败');
+                    }
+                },
+
             })
           }
 
