@@ -11,7 +11,7 @@ from extends import (
 )
 # Local application/library specific imports.
 from apps.weibo_UI.rag_run import *
-from apps.weibo_UI.models import weibo_UI_Model,weibo_Pic_Model,weibo_Vedio_Model,weibo_wpp_draft_Model
+from apps.weibo_UI.models import weibo_UI_Model,weibo_Pic_Model,weibo_Vedio_Model,weibo_wpp_draft_Model,weibo_file_change_Model
 
 bp = Blueprint("weibo_UI", __name__, url_prefix='/weibo_UI',static_folder='static',template_folder='templates')
 
@@ -336,15 +336,21 @@ def upload():
     status=''
     if request.method == "POST":
         f = request.files['file']
-        _filename_ascii_add_strip_re = re.compile(r'[^A-Za-z0-9_\u4E00-\u9FBF\u3040-\u30FF\u31F0-\u31FF.-]')
-        filename = str(_filename_ascii_add_strip_re.sub('', '_'.join( # 新的正则
-                f.filename.split()))).strip('._')
+        unique_id=str(uuid.uuid4()).replace('-','')[10:]
+        filename=unique_id+'.docx'
         filename=secure_filename(filename)
         save_path=os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        print(save_path)
         if not os.path.exists(current_app.config['UPLOAD_FOLDER']):
             os.mkdir(current_app.config['UPLOAD_FOLDER'])
         f.save(save_path)
         status="upload ok"
+        f=str(f.filename).replace('《','').replace('》','').replace('-','').replace('=','').replace('。','').replace(':','')
+        file_model=weibo_file_change_Model()
+        file_model.initial_filename     = f
+        file_model.temp_filename        = filename
+        db.session.add(file_model)
+        db.session.commit()
     return render_template('upload_Document.html',username=username,status=status)
 
 @bp.route('/submit_kb',methods=["POST","GET"])
@@ -392,11 +398,19 @@ def submit_doc():
     if request.method == "POST":
         data = request.get_json()
         if 'selec_file' in data['Type']:
-            filepath=current_app.config['UPLOAD_FOLDER']
-            files=os.listdir(filepath)
-            file_dict={}
-            file_dict['list']=files
-            return jsonify(file_dict)
+            #filepath=current_app.config['UPLOAD_FOLDER']
+            #files=os.listdir(filepath)
+            item_list=weibo_file_change_Model.query.all()
+            File_lists = []
+            choose_dict={}
+            for item in item_list:
+                temp_dict={}
+                temp_dict['old']=item.initial_filename
+                print('++++',item.initial_filename)
+                temp_dict['new']=item.temp_filename
+                File_lists.append(temp_dict)
+            choose_dict['content']=File_lists
+            return jsonify(choose_dict)
         elif 'add_doc' in data['Type']:
             Kb_id_doc=data['Kb_id_doc']
             print('222',Kb_id_doc)
@@ -736,6 +750,42 @@ def draft_add():
                 temp_dict['thumb_media_id']=item.media_id
                 Pic_lists.append(temp_dict)
             choose_dict['content']=Pic_lists
+            return jsonify(choose_dict)
+        elif 'generate' in data['Type']:
+            Title=data['Title']
+            format=data['format']
+            digest=data['digest']
+            type_name=data['type_name']
+            model_select=data['model_name']
+            if '2' in format:#小红书
+                base_prompt = """
+                帮我生成一篇关于`{}`
+                的小红书种草文案。文案需要包含标题和正文，需要使用多种 emoji 来增强视觉吸引力和情感表达，内容包括`{}`
+                """.strip()
+                prompt = base_prompt.format('\n'.join(Title), digest)
+            elif '3' in format:
+                content_req='幽默'
+                total_req='言辞生动活泼、富有感染力'
+                target_people='年轻人'
+                base_prompt = """
+                帮我写一篇公众号文章，要求如下：
+                公众号主题：`{}`
+                公众号文章名称：`{}`。
+                公众号内容要求：以生动的语言描述主题魅力，突出`{}`，吸引读者关注。
+                整体风格要求：`{}`。
+                目标读者群体为：`{}`
+                """.strip()
+                prompt = base_prompt.format('\n'.join(digest), Title,content_req,total_req,target_people)
+            url = 'http://127.0.0.1:4010/private/inference'
+            # 检查响应状态代码
+            answer=no_vector_model_rag(url,prompt,type_name,model_select)
+            res_result=''
+            if answer['message'] == 'success':
+                # 打印响应文本
+                res_result=answer['data']['result']
+            choose_dict={}
+            choose_dict['result']=1
+            choose_dict['res_result']=res_result
             return jsonify(choose_dict)
     return render_template('draft_add.html',username=username)
 

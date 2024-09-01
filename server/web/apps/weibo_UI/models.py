@@ -63,3 +63,14 @@ class weibo_wpp_draft_Model(db.Model):
         nullable=False,
         default=datetime.datetime.now(cst_tz)
     )
+
+class weibo_file_change_Model(db.Model):
+    __tablename__ = 'wpp_file_upload'
+    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    initial_filename: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
+    temp_filename: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
+    create_time: Mapped[datetime.datetime] = mapped_column(
+        db.DateTime,
+        nullable=False,
+        default=datetime.datetime.now(cst_tz)
+    )

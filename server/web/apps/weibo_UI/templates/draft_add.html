@@ -41,10 +41,28 @@
                 
                 <div class="card-body">
                   <h5 class="card-title">AI <span>| fighting</span></h5>
-                  
+                  <div class="col-sm-3">
+                    <select id="type_select" name="type_name_select" class="form-select" aria-label="Default select example">
+                      <option value="-1">--请选择模型框架--</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-3">
+                    <select id="model_select" name="choose_select" class="form-select" aria-label="Default select example">
+                      <option value="-1">--请选择模型名称--</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-13">
+                    <label for="format">请选择文章风格:</label>
+                    <select id="format" name="format" class="form-select" aria-label="Default select example">
+                      <option value="-1">--select_format--</option>
+                      <option value="2">--小红书--</option>
+                      <option value="3">--公众号--</option>
+                    </select>
+                  </div>
                   <div class="col-sm-16">
                     <label for="Title">Title:</label>
                     <input type="text" id="Title" name="Title"  size="30" />
+                    <button id="generate" type="submit" class="btn btn-primary">AI Generate</button>
                   </div>
                   <div class="col-sm-13">
                     <label for="pic_file">请选择封面图片:</label>
@@ -156,6 +174,95 @@
             })
            }
         })
+        $("#generate").click(function () {
+        var Title = document.getElementById("Title").value; // 获取输入框中的值
+        var format = document.getElementById("format").value; // 获取输入框中的值
+        var digest = document.getElementById("digest").value; // 获取输入框中的值
+        var type_name = document.getElementById("type_select").value; // 获取输入框中的值
+        var model_name = document.getElementById("model_select").value; // 获取输入框中的值
+        console.log(Title)
+          if (Title=="") {
+            alert('Title 请填写!')
+          } else if (format=="-1") {
+            alert('format 请选择!')
+          } else if (digest=="") {
+            alert('digest 请填写!')
+          } else if (type_name=="-1") {
+            alert('type_name 请选择!')
+          } else if (model_name=="-1") {
+            alert('model_name 请选择!')
+          } else {
+            $.ajax({
+                url:"/weibo_UI/draft_add",
+                type:"post",
+                data:JSON.stringify({'Type':'generate','Title':Title,'format':format,'digest':digest,'type_name':type_name,'model_name':model_name}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                    if (choose_dict['result']) {
+                      document.getElementById("content").innerHTML = choose_dict['res_result'];
+                    } else {
+                        alert('处理失败');
+                    }
+                },
+
+            })
+          }
+
+      })
+      $("#type_select").click(function () {
+          type_name='choose_type'
+          console.log('hello1')
+          count = $('#type_select').find('option').length
+          if (count<=1) {
+            $.ajax({
+                url:"/weibo_UI/choose_model_post",
+                type:"post",
+                data:JSON.stringify({'type_name':type_name}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                  file_list=choose_dict['content']
+                      $("#type_select").find("option").remove();
+                      count = $('#type_select').find('file_list').length
+                      console.log(count)
+                      $.each(file_list, function(index,item) {
+                        if (!count) {
+                          $("#type_select").append(  //此处向select中循环绑定数据
+                          "<option value="+item+">" + item+ "</option>");
+                        }
+                      });
+                },
+              
+            })
+          }
+
+      })
+      $("#model_select").click(function () {
+          type_name='choose_model'
+          var type_select = document.getElementById("type_select").value;
+          count = $('#model_select').find('option').length
+          if (count<=1) {
+            $.ajax({
+                url:"/weibo_UI/choose_model_post",
+                type:"post",
+                data:JSON.stringify({'type_name':type_name,'type_select':type_select}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                  file_list=choose_dict['content']
+                      $("#model_select").find("option").remove();
+                      count = $('#model_select').find('file_list').length
+                      console.log(count)
+                      $.each(file_list, function(index,item) {
+                        if (!count) {
+                          $("#model_select").append(  //此处向select中循环绑定数据
+                          "<option value="+item+">" + item+ "</option>");
+                        }
+                      });
+                },
+              
+            })
+          }
+
+      })
   }
 
 </script>
