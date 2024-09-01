@@ -17,3 +17,4 @@ supervisor==4.2.5
 uvicorn==0.30.4
 jieba==0.42.1
 nltk==3.9.1
+volcengine==1.0.151
