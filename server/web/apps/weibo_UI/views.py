@@ -11,7 +11,7 @@ from extends import (
 )
 # Local application/library specific imports.
 from apps.weibo_UI.rag_run import *
-from apps.weibo_UI.models import weibo_UI_Model,weibo_Pic_Model,weibo_Vedio_Model
+from apps.weibo_UI.models import weibo_UI_Model,weibo_Pic_Model,weibo_Vedio_Model,weibo_wpp_draft_Model
 
 bp = Blueprint("weibo_UI", __name__, url_prefix='/weibo_UI',static_folder='static',template_folder='templates')
 
@@ -217,29 +217,6 @@ def upload_video():
         return render_template('upload_video.html',username=username,status=status)
     return render_template('upload_video.html',username=username,status=status)
 
-@bp.route('/publish_free',methods=["POST","GET"])
-@login_required  
-def publish_free():
-    username=session.get("name")
-    if request.method == "POST":
-        access_token='abc'
-        choose_dict={}
-        choose_dict['result']=0
-        data = request.get_json()
-        Media_id=data['Media_id']
-        ####  post  ####
-        url_self_media= 'http://127.0.0.1:6050/wpp/publish_free'
-        json_data_self_media = {
-            "access_token": access_token,
-            "MEDIA_ID": Media_id
-        }
-        # 发送请求并存储响应
-        response_self_media = requests.post(url_self_media, json=json_data_self_media)
-        self_media_res=response_self_media.json()
-        if self_media_res['success']:
-            choose_dict['result']=1
-        return jsonify(choose_dict)
-    return render_template('publish_free.html',username=username)
 ######################################################################################
 # 知识库
 ######################################################################################
@@ -738,6 +715,16 @@ def draft_add():
             self_media_res=response_self_media.json()
             if self_media_res['success']:
                 choose_dict['result']=1
+                new_wpp_draft = weibo_wpp_draft_Model()
+                new_wpp_draft.title               = Title
+                new_wpp_draft.author              = username
+                new_wpp_draft.thumb_media_id      = thumb_media_id
+                new_wpp_draft.media_id            = self_media_res['data']['media_id']
+                new_wpp_draft.digest              = digest
+                new_wpp_draft.content             = content
+                new_wpp_draft.content_source_url  = content_source_url
+                db.session.add(new_wpp_draft)
+                db.session.commit()
             return jsonify(choose_dict)
         elif 'selec_pic' in data['Type']:
             item_list = weibo_Pic_Model.query.all()
@@ -770,14 +757,30 @@ def self_media():
                 "access_token": access_token,
                 "MEDIA_ID": MEDIA_ID
             }
-        # 发送请求并存储响应
-        response_self_media = requests.post(url_self_media, json=json_data_self_media)
-        self_media_res=response_self_media.json()
-        choose_dict={}
-        choose_dict['result']=0
-        if self_media_res['success']:
-            choose_dict['result']=1
-            #choose_dict['content']=response
+            # 发送请求并存储响应
+            response_self_media = requests.post(url_self_media, json=json_data_self_media)
+            self_media_res=response_self_media.json()
+            choose_dict={}
+            choose_dict['result']=0
+            if self_media_res['success']:
+                choose_dict['result']=1
+                #choose_dict['content']=response
+                return jsonify(choose_dict)
+        elif 'selec_media_id' in data['Type']:
+            item_list = weibo_wpp_draft_Model.query.all()
+            Wpp_lists = []
+            choose_dict={}
+            for item in item_list:
+                temp_dict={}
+                temp_dict['title']               = item.title               
+                temp_dict['author']              = item.author              
+                temp_dict['thumb_media_id']      = item.thumb_media_id      
+                temp_dict['media_id']            = item.media_id            
+                temp_dict['digest']              = item.digest              
+                temp_dict['content']             = item.content             
+                temp_dict['content_source_url']  = item.content_source_url
+                Wpp_lists.append(temp_dict)
+            choose_dict['content']=Wpp_lists
             return jsonify(choose_dict)
     username=session.get("name")
     return render_template('self_media.html',username=username)
