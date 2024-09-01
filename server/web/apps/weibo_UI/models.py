@@ -48,11 +48,11 @@ class weibo_Vedio_Model(db.Model):
         default=datetime.datetime.now(cst_tz)
     )
 
-class weibo_wpp_draft_Model(db.Model):
-    __tablename__ = 'wpp_draft'
+class weibo_wpp_add_draft_Model(db.Model):
+    __tablename__ = 'wpp_add_draft'
     id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    title: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
-    author: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
+    title: Mapped[str] = mapped_column(db.String, nullable=False, default=None)
+    user: Mapped[str] = mapped_column(db.String, nullable=False,default=None)
     media_id: Mapped[str] = mapped_column(db.String, nullable=False, unique=True)
     digest: Mapped[str] = mapped_column(db.String, nullable=False, default=None)
     content: Mapped[str] = mapped_column(db.String, nullable=False, default=None)
