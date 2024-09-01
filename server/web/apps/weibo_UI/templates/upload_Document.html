@@ -142,30 +142,33 @@
             }
   
         })
+        
         $("#doc_file").click(function () {
-              console.log('hello world')
-              $.ajax({
-                  url:"/weibo_UI/submit_doc",
-                  type:"post",
-                  data:JSON.stringify({'Type':'selec_file'}),
-                  contentType: 'application/json; charset=UTF-8',
-                  success: function(file_dict) {
-                    file_list=file_dict['list']
+          count = $('#doc_file').find('option').length
+          if (count<=1) {
+            $.ajax({
+                url:"/weibo_UI/submit_doc",
+                type:"post",
+                data:JSON.stringify({'Type':'selec_file'}),
+                contentType: 'application/json; charset=UTF-8',
+                success: function(choose_dict) {
+                  file_list=choose_dict['content']
                       $("#doc_file").find("option").remove();
                       count = $('#doc_file').find('file_list').length
-                      //console.log(count)
                       $.each(file_list, function(index,item) {
                         if (!count) {
+                          old_file=item['old'];
+                          new_file=item['new'];
                           $("#doc_file").append(  //此处向select中循环绑定数据
-                          "<option value="+item+">" + item+ "</option>");
+                          "<option value="+new_file+">" + old_file+ "</option>");
                         }
                       });
-                  },
-  
-              })
-            
-        })
-        
+                },
+              
+            })
+          }
+
+      })
         $("#submit_doc").click(function () {
             var Kb_id_doc = document.getElementById("KB_id").value; // 获取输入框中的值
             console.log(Kb_id_doc)
