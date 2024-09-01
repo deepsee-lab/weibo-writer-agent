@@ -42,6 +42,7 @@ def generate(item: GenerateItem):
     logger.info('run generate')
     logger.info('item: {}'.format(item))
     output_file = inf(item.prompt, item.negative_prompt, item.audio_end_in_s, item.filename)
+    logger.info('output_file: {}'.format(output_file))
     if item.upload_to_cdn:
         url = upload(item.bucket_name, output_file, item.expire_time)
         data = {

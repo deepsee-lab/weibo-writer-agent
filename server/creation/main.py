@@ -11,8 +11,8 @@ app = FastAPI(
     title="Creation",
     description="Creation",
     version="0.0.1",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/wb_ai/docs",
+    redoc_url="/wb_ai/redoc",
 )
 # 允许所有来源
 origins = ["*"]
@@ -29,20 +29,13 @@ app.include_router(image_router)
 app.include_router(audio_router)
 app.include_router(video_router)
 
-
-@app.get("/")
-def index():
-    logger.info("index")
-    return "index"
-
-
 host = '0.0.0.0'
 port = 6060
 reload = True
 
 logger.info('Server is up and running.')
 logger.info('Browse http://127.0.0.1:{} to verify.'.format(port))
-logger.info('Browse http://127.0.0.1:{}/docs to test.'.format(port))
+logger.info('Browse http://127.0.0.1:{}/wb_ai/docs to test.'.format(port))
 
 if __name__ == '__main__':
     uvicorn.run(app="main:app", reload=reload, host=host, port=port)
