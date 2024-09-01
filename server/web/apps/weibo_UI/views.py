@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Standard library imports.
-import sqlite3,os,json,re,requests,uuid,urllib.request,datetime
+import sqlite3,os,json,re,requests,uuid,urllib.request,datetime,pyperclip
 # Related third party imports.
 from flask import Flask, Blueprint,render_template,request,jsonify,url_for,current_app,session,redirect,g
 from functools import wraps
@@ -903,47 +903,55 @@ def weibo_choose_model():
 def weibo_model_run():
     if request.method == "POST":
         data = request.get_json()
-        type_name=data['type_name']
-        model_select=data['model_name']
-        KB_id=data['KB_id']
-        top_selector=data['top_selector']
-        top_K=int(top_selector)
-        query=data['query']
-        base_prompt = """
-        请根据案例```
-        {}
-        ```
-        编写一个80字左右的法律科普微博
-            """.strip()
-        prompt = base_prompt.format('\n\n'.join(query))
-        logger.info(query)
-        logger.info(prompt)
-        if KB_id=='0':
-            url = 'http://127.0.0.1:4010/private/inference'
-            # 检查响应状态代码
-            rag_result=''
-            retrieve_result=''
-            answer=no_vector_model_rag(url,prompt,type_name,model_select)
-            if answer['message'] == 'success':
-                # 打印响应文本
-                rag_result=answer['data']['result']
-                retrieve_result='(no select vector)'
-        else:
-            url = 'http://127.0.0.1:7020/inference'
-            # 检查响应状态代码
-            rag_result=''
-            retrieve_result=''
-            answer=vector_model_rag(url,KB_id,top_K,prompt,type_name,model_select)
-            if answer['message'] == 'success':
-                # 打印响应文本
-                rag_result=answer['data']['rag_result']
-                retrieve_result=answer['data']['retrieve_result'][0][0]['entity']['text']
-        choose_dict={}
-        choose_dict['result']=1
-        choose_dict['rag_result']=rag_result
-        choose_dict['retrieve_result']=retrieve_result
-        #choose_dict['content']=response
-        return jsonify(choose_dict)
+        if 'run' in data['Type']:
+            type_name=data['type_name']
+            model_select=data['model_name']
+            KB_id=data['KB_id']
+            top_selector=data['top_selector']
+            top_K=int(top_selector)
+            query=data['query']
+            base_prompt = """
+            请根据案例```
+            {}
+            ```
+            编写一个80字左右的法律科普微博，文案需要包含标题和正文，需要使用多种 emoji 来增强视觉吸引力和情感表达
+                """.strip()
+            prompt = base_prompt.format('\n\n'.join(query))
+            logger.info(query)
+            logger.info(prompt)
+            if KB_id=='0':
+                url = 'http://127.0.0.1:4010/private/inference'
+                # 检查响应状态代码
+                rag_result=''
+                retrieve_result=''
+                answer=no_vector_model_rag(url,prompt,type_name,model_select)
+                if answer['message'] == 'success':
+                    # 打印响应文本
+                    rag_result=answer['data']['result']
+                    retrieve_result='(no select vector)'
+            else:
+                url = 'http://127.0.0.1:7020/inference'
+                # 检查响应状态代码
+                rag_result=''
+                retrieve_result=''
+                answer=vector_model_rag(url,KB_id,top_K,prompt,type_name,model_select)
+                if answer['message'] == 'success':
+                    # 打印响应文本
+                    rag_result=answer['data']['rag_result']
+                    retrieve_result=answer['data']['retrieve_result'][0][0]['entity']['text']
+            choose_dict={}
+            choose_dict['result']=1
+            choose_dict['rag_result']=rag_result
+            choose_dict['retrieve_result']=retrieve_result
+            #choose_dict['content']=response
+            return jsonify(choose_dict)
+        elif 'copy' in data['Type']:
+            answer=data['answer']
+            pyperclip.copy(answer)
+            choose_dict={}
+            choose_dict['result']=1
+            #choose_dict['content']=response
+            return jsonify(choose_dict)
 #################################################################
 ############     2、 新浪微博
 #################################################################
